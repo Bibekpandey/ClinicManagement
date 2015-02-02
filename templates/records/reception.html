@@ -1,0 +1,65 @@
+<script>
+function hideforms()
+{
+	document.getElementById("new_patient").style.visibility="collapse";
+}
+	
+function newPatient()
+{
+	document.getElementById("new_patient").style.visibility="visible";
+}
+</script>
+<body onload="hideforms()">
+<form method="post" action="{% url 'reception' %}">
+{% csrf_token %}
+<input type="radio" name="type" value="new" onclick="newPatient()"/>new patient<br>
+<input type="radio" name="type" value="followup"/>Followup<br>
+<input type="radio" name="type" value="continuation"/>Continuation<br>
+
+<!-- THIS IS FOR THE NEW PATIENT --!>
+<div id="new_patient">
+	<table border="0" style="">
+		<tr>
+			<td>First Name: </td>
+			<td><input type="text" name="firstName" /></td>
+		</tr>
+		<tr>
+			<td>Middle Name: </td>
+			<td><input type="text" name="middleName" /></td>
+		</tr>
+		<tr>
+			<td>Last Name: </td>
+			<td><input type="text" name="lastName" /></td>
+		</tr>
+		<tr>
+			<td>Age: </td>
+			<td><input type="text" name="age" /></td>
+		</tr>
+		<tr>
+			<td>Address: </td>
+			<td><input type="text" name="address" /></td>
+		</tr>
+		<tr>
+			<td>Sex: </td>
+			<td><input type="text" name="sex" /></td>
+		</tr>
+		<tr>
+			<td>Blood Group: </td>
+			<td><input type="text" name="bloodGroup" /></td>
+		</tr>
+	</table>	
+</div>
+<div id="problems_form">
+	<table border="0">
+		<tr>
+			<td>Problem Stated:</td>
+			<td><input type="textarea" name="problems"/></td>
+		</tr>
+		<tr>
+			<td>Doctor:</td>
+			<td><select name="doctor">
+				{% for x in doctors %}
+<input type="submit" value="ok"/>
+</form>
+
+</body>

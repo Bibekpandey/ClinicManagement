@@ -15,7 +15,7 @@ class Person(models.Model):
 class Patient(Person):
 	bloodGroup 		= models.CharField(max_length=5)
 	firstVisit 		= models.DateTimeField()
-	numberOfVisits 	= models.IntegerField(default=1)
+	numberOfVisits 	= models.IntegerField(default=0)
 	
 
 class Doctor(Person):
@@ -64,12 +64,13 @@ class Visit(models.Model):
 	date 			= models.DateTimeField()
 	isFirstVisit 	= models.BooleanField(default=False) ## check whether it is first visit or not
 	isFollowup 		= models.BooleanField(default=False) ## check whether the patient's visit is for followup or not
+	isContinuation = models.BooleanField(default=False) ## check whether patient is visiting for last time's unfinished task
 	patientProblems = models.CharField(max_length = 200)  # the problems the patient states
 	problems 		= models.CharField(max_length = 500) ## the problems/illness that doctor sees
 	appointmentTime = models.DateTimeField()
 	appointmentDoc	= models.ForeignKey(Doctor)
-	test 			= models.ForeignKey(Test)
-	report 			= models.ForeignKey(Report)
+	test 			= models.ForeignKey(Test, blank=True)
+	report 			= models.ForeignKey(Report, blank=True)
 	medicine 		= models.ManyToManyField(Medicine, blank=True)
 	#medication 		= models.ForeignKey(Medication)
 
