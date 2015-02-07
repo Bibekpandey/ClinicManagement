@@ -1,14 +1,28 @@
 from django.db import models
 
+# time WorkingHour model
+class WorkingHour(models.Model):
+	sunday 		= models.CharField(max_length=50)
+	monday 		= models.CharField(max_length=50)
+	tuesday		= models.CharField(max_length=50)
+	wednesday	= models.CharField(max_length=50)
+	thursday	= models.CharField(max_length=50)
+	friday		= models.CharField(max_length=50)
+	saturday	= models.CharField(max_length=50)
+
+	def __str__(self):
+		return self.pk
+
+
 class Person(models.Model):
 	firstName 	= models.CharField(max_length=30)
 	middleName 	= models.CharField(max_length=30,blank=True)
 	lastName 	= models.CharField(max_length=30)
-	age 		= models.IntegerField()
+	age 		= models.IntegerField(default=0)
 	address 	= models.CharField(max_length=50)
 	sex 		= models.CharField(max_length=6)
 	
-	def __string__(self):
+	def __str__(self):
 		return self.firstName + " " + self.lastName
 
 
@@ -16,21 +30,29 @@ class Patient(Person):
 	bloodGroup 		= models.CharField(max_length=5)
 	firstVisit 		= models.DateTimeField()
 	numberOfVisits 	= models.IntegerField(default=0)
+
+	def __str__(self):
+		return self.firstName + " " + self.lastName
 	
 
 class Doctor(Person):
 	dateJoined 		= models.DateTimeField()
 	qualification 	= models.CharField(max_length = 100)
 	specialization 	= models.CharField(max_length = 100)
-	# working hour to be added
+	workingHour 	= models.OneToOneField(WorkingHour, null=True)
+
+	def __str__(self):
+		return self.firstName
 
 
 class Staff(Person):
 	dateJoined 		= models.DateTimeField()
 	qualification 	= models.CharField(max_length = 100)
 	workingField 	= models.CharField(max_length = 50)
-	# working hour to be added
+	workingHour 	= models.OneToOneField(WorkingHour, null=True)
 	
+	def __str__(self):
+		return self.firstName + " " + self.lastName
 
 class Test(models.Model):
 	date 		= models.DateTimeField()

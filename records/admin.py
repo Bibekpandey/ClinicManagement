@@ -8,4 +8,5 @@ admin.site.register(Visit)
 admin.site.register(Medicine)
 admin.site.register(Test)
 admin.site.register(Report)
+admin.site.register(WorkingHour)
 

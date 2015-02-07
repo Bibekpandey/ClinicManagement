@@ -2,32 +2,35 @@ from django.shortcuts import render
 from django.views.generic import View
 from django.views.generic.edit import FormView
 from django.http import HttpResponse, Http404, HttpResponseRedirect
+import json
 
 from records.models import *
-from records.forms import *
 
 class Index(View):
 	def get(self, request):
-		a={'receptionist':'reception.html', 'labstaff':'lab.html'}
-		a['doctor'] = 'doctor.html'
-		a['pharmacist'] = 'pharma.html'
+		a={'receptionist':'reception', 'labstaff':'lab'}
+		a['doctor'] = 'doctor'
+		a['pharmacist'] = 'pharma'
 		return render(request, 'records/index.html', a) 
 
 
-class Receptionist(View):
-	template_name = 'reception.html'
-	form_class = ReceptionForm
-	success_url = '/'
-
-	def form_valid(self, form):
-		return super(Receptionist, self).form_valid(form)
+class ReceptionistPage(View):
 
 	def get(self, request):
-		return render(request, 'records/reception.html', {})
+		doctors = Doctor.objects.all()
+
+		docs = [{'name':(doc.firstName + " " + doc.lastName), 'id':doc.pk} for doc in doctors]
+		docId = [(doc.pk) for doc in doctors] # for sending primary keys to template, later it will be easier to select doctor
+		times = json.dumps([[doc.workingHour.sunday,doc.workingHour.monday, doc.workingHour.tuesday,
+						doc.workingHour.wednesday, doc.workingHour.thursday, doc.workingHour.friday,
+						doc.workingHour.saturday] for doc in doctors])
+
+		return render(request, 'records/reception.html', {'doctors':docs, 'times':times})
+
 	def post(self, request):
 		return HttpResponse("haha")
 
-class Doctor(View):
+class DoctorPage(View):
 	def get(self, request):
 		return render(request, 'records/doctor.html', {})
 		
