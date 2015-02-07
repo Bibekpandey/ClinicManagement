@@ -59,9 +59,9 @@ function newPatient()
 			<tr>
 				<td>Doctor:</td>
 				<td><select name="doctor" >
-						<option value="none">SELECT DOCTOR</option>
+						<option value="none" onclick="clearWorkingHr()">SELECT DOCTOR</option>
 					{% for x in doctors %} 
-						<option value="{{x.id}}" onclick="getDocTime('{{forloop.counter0}}')"> {{x.name}}</option>
+						<option value="{{x.id}}" onclick="getDocWorkingHr('{{forloop.counter0}}')"> {{x.name}}</option>
 					{% endfor %}
 					</select>
 				</td>
@@ -77,7 +77,8 @@ function newPatient()
 
 <script>
 
-	function getDocTime(index)
+	// getting corresponding working hour for the selected doctor
+	function getDocWorkingHr(index)
 	{
 		// index is the index of doctor, we find the corresponding working hour
 
@@ -95,6 +96,16 @@ function newPatient()
 		// create options
 		for(var z in workinghrs)
 			element.options[z]=new Option(workinghrs[z], workinghrs[z]);
+	}
+
+	function clearWorkingHr()
+	{
+		var workinghrs = document.getElementById("time_option");
+		// delete options
+		for(var z in workinghrs.options)
+		{
+			workinghrs.remove(workinghrs.options[z]);
+		}
 	}
 	
 </script>
