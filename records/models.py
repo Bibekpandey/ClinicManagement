@@ -1,100 +1,127 @@
 from django.db import models
+from datetime import datetime
 
-# time WorkingHour model
-class WorkingHour(models.Model):
-	sunday 		= models.CharField(max_length=50)
-	monday 		= models.CharField(max_length=50)
-	tuesday		= models.CharField(max_length=50)
-	wednesday	= models.CharField(max_length=50)
-	thursday	= models.CharField(max_length=50)
-	friday		= models.CharField(max_length=50)
-	saturday	= models.CharField(max_length=50)
 
-	def __str__(self):
-		return self.pk
+# for the ranges of values like RBC count normal value lies between 12000 - 15000 cucmm(just example)
 
+class Range(models.Model):
+    startValue  = models.IntegerField(default=0)
+    endValue    = models.IntegerField(default=0)
+    unit        = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.startValue + " - " + self.endValue + " " + unit
+
+
+# Test types like Haematology, Serology, Urine, etc.
+
+class TestType(models.Model):
+    name        = models.CharField(max_length=30)
+    comments    = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.name
+
+
+# test field contains subtests done in overall tests like Haematology, Serology.
+# More clearly, a Haematology test consists of Lymphocyte counts, Neurophill counts and so on.
+
+class TestField(models.Model):
+    testType    = models.ForeignKey('TestType')
+    name        = models.CharField(max_length=50)
+    price       = models.IntegerField(default= 0)
+
+    def __str__(self):
+        return self.name
+
+
+# field for tests having boolean results like parasites found/not found, and so on
+
+class BooleanTestField(TestField):
+    positive = models.CharField(max_length=30) # like, in parasites field, positive means 'found' and negative means 'not found'
+    negative = models.CharField(max_length=30)
+
+
+# field for tests having numerical results like RBC count
+
+class NumericTestField(TestField):
+    maleRange   = models.OneToOneField('Range', related_name="male_range")
+    femaleRange = models.OneToOneField('Range', related_name="female_range")
+    childRange  = models.OneToOneField('Range', related_name="child_range")
+
+
+# for storing result
+
+class BooleanResult(models.Model):
+    field   = models.ForeignKey('BooleanTestField') # which field it belongs to
+    test    = models.ForeignKey('Test') # which test does it belongs to
+    value   = models.BooleanField(default=False)
+
+    def __str__(self):
+        if self.value:
+            result = self.field.positive
+        else:
+            result = self.field.negative
+        return self.field.name + " " + result 
+
+
+# for storing numeric result
+
+class NumericResult(models.Model):
+    field   = models.ForeignKey('NumericTestField') # which field it belongs to
+    test    = models.ForeignKey('Test') # which test does it belongs to
+    value   = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.field.name + " " + self.value
+
+
+# A person
 
 class Person(models.Model):
-	firstName 	= models.CharField(max_length=30)
-	middleName 	= models.CharField(max_length=30,blank=True)
-	lastName 	= models.CharField(max_length=30)
-	age 		= models.IntegerField(default=0)
-	address 	= models.CharField(max_length=50)
-	sex 		= models.CharField(max_length=6)
-	
-	def __str__(self):
-		return self.firstName + " " + self.lastName
+    name = models.CharField(max_length=50)
+    age = models.IntegerField(default=0)
+    address = models.CharField(max_length=50)
+    contact = models.CharField(max_length=50)
+    sex = models.CharField(max_length=6)
+
+    def __str__(self):
+        return self.name
 
 
-class Patient(Person):
-	bloodGroup 		= models.CharField(max_length=5)
-	firstVisit 		= models.DateTimeField()
-	numberOfVisits 	= models.IntegerField(default=0)
-
-	def __str__(self):
-		return self.firstName + " " + self.lastName
-	
+# Doctor
 
 class Doctor(Person):
-	dateJoined 		= models.DateTimeField()
-	qualification 	= models.CharField(max_length = 100)
-	specialization 	= models.CharField(max_length = 100)
-	workingHour 	= models.OneToOneField(WorkingHour, null=True)
-
-	def __str__(self):
-		return self.firstName
+    hospital = models.CharField(max_length=50)
+    field = models.CharField(max_length=40)
 
 
-class Staff(Person):
-	dateJoined 		= models.DateTimeField()
-	qualification 	= models.CharField(max_length = 100)
-	workingField 	= models.CharField(max_length = 50)
-	workingHour 	= models.OneToOneField(WorkingHour, null=True)
-	
-	def __str__(self):
-		return self.firstName + " " + self.lastName
+# Patient
 
-class Test(models.Model):
-	date 		= models.DateTimeField()
-	testType 	= models.CharField(max_length = 50)
-	description = models.TextField()
-	price		= models.IntegerField(default=0)
-	isClear		= models.BooleanField(default=False)
+class Patient(Person):
+   referredBy = models.OneToOneField('Doctor') 
+   numberOfVisits = models.IntegerField(default=1)
+   membership = models.CharField(max_length=40)
 
-	def __string__(self):
-		return self.testType
 
-class Report(models.Model):
-	test = models.ForeignKey(Test)
-	description = models.TextField()
-
-	def __string__(self):
-		return self.test.testType
-	
-
-class Medicine(models.Model):
-	name 	= models.CharField(max_length=50)
-	price 	= models.IntegerField(default=0)
-	unit 	= models.CharField(max_length=50)
-	
-	def __string__(self):
-		return self.name
-
+# Visit model, records details of patient's each visit
 
 class Visit(models.Model):
-	patient 		= models.ForeignKey(Patient)
-	date 			= models.DateTimeField()
-	isFirstVisit 	= models.BooleanField(default=False) ## check whether it is first visit or not
-	isFollowup 		= models.BooleanField(default=False) ## check whether the patient's visit is for followup or not
-	isContinuation = models.BooleanField(default=False) ## check whether patient is visiting for last time's unfinished task
-	patientProblems = models.CharField(max_length = 200)  # the problems the patient states
-	problems 		= models.CharField(max_length = 500) ## the problems/illness that doctor sees
-	appointmentTime = models.DateTimeField()
-	appointmentDoc	= models.ForeignKey(Doctor)
-	test 			= models.ForeignKey(Test, blank=True)
-	report 			= models.ForeignKey(Report, blank=True)
-	medicine 		= models.ManyToManyField(Medicine, blank=True)
-	#medication 		= models.ForeignKey(Medication)
+    patient = models.ForeignKey('Patient')
+    date = models.DateTimeField(default=datetime.now())
+    totalBill = models.IntegerField(default=0)
+    comments = models.CharField(max_length=100, blank=True)
 
-	def __string__(self):
-		return self.date + " " + self.patient.firstName
+    def __str__(self):
+        return self.patient.name + " " + self.date
+
+
+# Test model, records tests done and reports of the test in a visit of patient
+
+class Test(models.Model):
+    visit = models.ForeignKey('Visit')
+    testType = models.ForeignKey('TestType')
+    reportDate = models.DateTimeField(default=datetime.now()) # stores the date when the report was prepared
+
+    def __str__(self):
+        return self.testType.name + " ("+self.visit.patient+")"
