@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='BooleanResult',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
                 ('value', models.BooleanField(default=False)),
             ],
             options={
@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='NumericResult',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
                 ('value', models.IntegerField(default=0)),
             ],
             options={
@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Person',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
                 ('name', models.CharField(max_length=50)),
                 ('age', models.IntegerField(default=0)),
                 ('address', models.CharField(max_length=50)),
@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Patient',
             fields=[
-                ('person_ptr', models.OneToOneField(serialize=False, primary_key=True, to='records.Person', parent_link=True, auto_created=True)),
+                ('person_ptr', models.OneToOneField(primary_key=True, auto_created=True, parent_link=True, to='records.Person', serialize=False)),
                 ('numberOfVisits', models.IntegerField(default=1)),
                 ('membership', models.CharField(max_length=40)),
             ],
@@ -59,7 +59,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Doctor',
             fields=[
-                ('person_ptr', models.OneToOneField(serialize=False, primary_key=True, to='records.Person', parent_link=True, auto_created=True)),
+                ('person_ptr', models.OneToOneField(primary_key=True, auto_created=True, parent_link=True, to='records.Person', serialize=False)),
                 ('hospital', models.CharField(max_length=50)),
                 ('field', models.CharField(max_length=40)),
             ],
@@ -70,7 +70,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Range',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
                 ('startValue', models.IntegerField(default=0)),
                 ('endValue', models.IntegerField(default=0)),
                 ('unit', models.CharField(max_length=20)),
@@ -82,8 +82,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Test',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
-                ('reportDate', models.DateTimeField(default=datetime.datetime(2015, 3, 4, 14, 47, 2, 759407))),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
+                ('reportDate', models.DateTimeField(default=datetime.datetime(2015, 3, 6, 16, 47, 13, 993627))),
             ],
             options={
             },
@@ -92,7 +92,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='TestField',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
                 ('name', models.CharField(max_length=50)),
                 ('price', models.IntegerField(default=0)),
             ],
@@ -103,10 +103,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='NumericTestField',
             fields=[
-                ('testfield_ptr', models.OneToOneField(serialize=False, primary_key=True, to='records.TestField', parent_link=True, auto_created=True)),
-                ('childRange', models.OneToOneField(related_name='child_range', to='records.Range')),
-                ('femaleRange', models.OneToOneField(related_name='female_range', to='records.Range')),
-                ('maleRange', models.OneToOneField(related_name='male_range', to='records.Range')),
+                ('testfield_ptr', models.OneToOneField(primary_key=True, auto_created=True, parent_link=True, to='records.TestField', serialize=False)),
+                ('childRange', models.OneToOneField(to='records.Range', related_name='child_range')),
+                ('femaleRange', models.OneToOneField(to='records.Range', related_name='female_range')),
+                ('maleRange', models.OneToOneField(to='records.Range', related_name='male_range')),
             ],
             options={
             },
@@ -115,7 +115,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='BooleanTestField',
             fields=[
-                ('testfield_ptr', models.OneToOneField(serialize=False, primary_key=True, to='records.TestField', parent_link=True, auto_created=True)),
+                ('testfield_ptr', models.OneToOneField(primary_key=True, auto_created=True, parent_link=True, to='records.TestField', serialize=False)),
                 ('positive', models.CharField(max_length=30)),
                 ('negative', models.CharField(max_length=30)),
             ],
@@ -126,7 +126,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='TestType',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
                 ('name', models.CharField(max_length=30)),
                 ('comments', models.CharField(max_length=200)),
             ],
@@ -137,8 +137,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Visit',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
-                ('date', models.DateTimeField(default=datetime.datetime(2015, 3, 4, 14, 47, 2, 758796))),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
+                ('date', models.DateTimeField(default=datetime.datetime(2015, 3, 6, 16, 47, 13, 992521))),
                 ('totalBill', models.IntegerField(default=0)),
                 ('comments', models.CharField(blank=True, max_length=100)),
                 ('patient', models.ForeignKey(to='records.Patient')),

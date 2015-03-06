@@ -99,7 +99,7 @@ class Doctor(Person):
 # Patient
 
 class Patient(Person):
-   referredBy = models.OneToOneField('Doctor') 
+   referredBy = models.OneToOneField('Doctor', null=True) 
    numberOfVisits = models.IntegerField(default=1)
    membership = models.CharField(max_length=40)
 
@@ -113,7 +113,7 @@ class Visit(models.Model):
     comments = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
-        return self.patient.name + " " + self.date
+        return self.patient.name + " on " + str(self.date)
 
 
 # Test model, records tests done and reports of the test in a visit of patient

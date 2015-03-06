@@ -2,38 +2,46 @@ from django.shortcuts import render
 from django.views.generic import View
 from django.views.generic.edit import FormView
 from django.http import HttpResponse, Http404, HttpResponseRedirect
+from records.forms import ContactForm, ReceptionForm
 import json
-
 from records.models import *
 
-class Index(View):
-	def get(self, request):
-		a={'receptionist':'reception', 'labstaff':'lab'}
-		a['doctor'] = 'doctor'
-		a['pharmacist'] = 'pharma'
-		return render(request, 'records/index.html', a) 
+def contact(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            return HttpResponse(cd.errors)
+        else:
+            return HttpResponse('invalid form')
+    else:
+        form = ContactForm()
+        return render(request, 'records/contact_form.html', {'form':form})
 
+class Reception(View):
+    def get(self, request):
+        form  = ReceptionForm()
+        return render(request, 'records/contact_form.html', {'form':form})
 
-class ReceptionistPage(View):
-
-	def get(self, request):
-		doctors = Doctor.objects.all()
-
-		docs = [{'name':(doc.firstName + " " + doc.lastName), 'id':doc.pk} for doc in doctors]
-		docId = [(doc.pk) for doc in doctors] # for sending primary keys to template, later it will be easier to select doctor
-		times = json.dumps([[doc.workingHour.sunday,doc.workingHour.monday, doc.workingHour.tuesday,
-						doc.workingHour.wednesday, doc.workingHour.thursday, doc.workingHour.friday,
-						doc.workingHour.saturday] for doc in doctors])
-
-		return render(request, 'records/reception.html', {'doctors':docs, 'times':times})
-
-	def post(self, request):
-		return HttpResponse("haha")
-
-class DoctorPage(View):
-	def get(self, request):
-		return render(request, 'records/doctor.html', {})
-		
-	def post(self, request):
-		return	
-		
+    def post(self, request):
+        if request.method == 'POST':
+            form = ReceptionForm(request.POST)
+            if form.is_valid(): # check for patient, if already, make
+# new visit object , if new, make new patient and visit object
+                data = form.cleaned_data
+                patients = Patient.objects.filter(name=data['name'], contact=data['contact'])
+                if len(patients) == 0:
+                    #means, no such patient, create new
+                    patient = Patient(name=data['name'], contact=data['contact'], age=data['age'], address=data['address'], sex=data['sex'], membership='none')
+                    patient.save()
+                    # patient created
+                else:
+                    patient = patients[0]
+                # now create visit object
+                visit = Visit(patient=patient)
+                visit.save()
+                return HttpResponse('created')
+            else:
+                return HttpResponse('invalid')
+        else:
+            return HttpResponse('not a post')
