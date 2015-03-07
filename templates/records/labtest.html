@@ -15,18 +15,20 @@
 
     numiric fields
     <div id="numeric">
-        <ul>
             {% for field in fields_numeric %}
-            <li> <button type="button" id="numeric {{ field }}" onClick="selectionNumeric(this.id)" > {{ field }} -- {{ field.category }} -- {{ field.maleRange }} </button> </li>
+            <div id = "numeric {{ field }}" onClick="selectionNumeric(this.id)">
+                <button type="button" > {{ field }} -- {{ field.category }} -- {{ field.maleRange }} </button>
+            </div>
             {% endfor %}
-        </ul>
     </div>
-    
+   
+    <br/>
     boolean fields
     <div id="boolean">
-        <ul>
             {% for field in fields_boolean %}
-            <li> <button type="button" id="boolean {{ field }}" onClick="selectionBoolean(this.id)"> {{ field }} -- {{ field.category }} </button> </li>
+            <div id = "boolean {{ field }}" onClick="selectionBoolean(this.id)">
+                <button type="button" > {{ field }} -- {{ field.category }} -- {{ field.maleRange }} </button>
+            </div>
             {% endfor %}
         </ul>
     </div>

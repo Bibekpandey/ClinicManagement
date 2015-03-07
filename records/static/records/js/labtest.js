@@ -2,13 +2,11 @@
 
 function selectionNumeric(id)
 {
-    id = id.replace(/\s+/g,' ');
-    var selected = document.getElementById("selected");
-    
-    var text = id.split(" ");
-    text = text.slice(1, text.length);
-    var sel_text = text.join("_");
-    //alert(sel_text);
+    var numeric = document.getElementById('numeric');
+    var x = document.getElementById(id);
+    numeric.removeChild(x);
+
+    var sel_text = "form_"+id;
 
     var newdiv = document.createElement("div");
     newdiv.setAttribute('id', sel_text);
@@ -39,6 +37,7 @@ function selectionBoolean(id)
 
 function cancelClick(id)
 {
+    alert(id);
     var x = document.getElementById(id);
     x.remove();
 }
