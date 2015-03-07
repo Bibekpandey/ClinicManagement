@@ -13,10 +13,10 @@
     <h1> Test Type </h1>
     <h2> {{ testtype }} </h2> 
 
-    numiric fields
+    numeric fields
     <div id="numeric">
             {% for field in fields_numeric %}
-            <div id = "numeric {{ field }}" onClick="selectionNumeric(this.id)">
+            <div id = "{{ field }}" onClick="selectionNumeric(this.id)">
                 <button type="button" > {{ field }} -- {{ field.category }} -- {{ field.maleRange }} </button>
             </div>
             {% endfor %}
@@ -26,7 +26,7 @@
     boolean fields
     <div id="boolean">
             {% for field in fields_boolean %}
-            <div id = "boolean {{ field }}" onClick="selectionBoolean(this.id)">
+            <div id = "{{ field }}" onClick="selectionBoolean(this.id)">
                 <button type="button" > {{ field }} -- {{ field.category }}</button>
             </div>
             {% endfor %}
@@ -34,11 +34,10 @@
     </div>
    
     <h2>selected fields </h2>
-    <div id="selected">
-    </div>
-
     <form action = "{% url 'labtest' %}" method="post">
     {% csrf_token %}
+        <div id="selected">
+        </div>
         <input type="submit" value="Submit">
     </form>
 
