@@ -15,13 +15,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='test',
             name='reportDate',
-            field=models.DateTimeField(default=datetime.datetime(2015, 3, 6, 16, 47, 33, 345442)),
+            field=models.DateTimeField(default=datetime.datetime(2015, 3, 7, 3, 13, 23, 762268)),
             preserve_default=True,
         ),
         migrations.AlterField(
             model_name='visit',
             name='date',
-            field=models.DateTimeField(default=datetime.datetime(2015, 3, 6, 16, 47, 33, 344599)),
+            field=models.DateTimeField(default=datetime.datetime(2015, 3, 7, 3, 13, 23, 761751)),
             preserve_default=True,
         ),
     ]

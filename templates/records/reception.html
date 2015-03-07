@@ -1,113 +1,13 @@
-<script>
-function hideforms()
-{
-	document.getElementById("new_patient").style.visibility="collapse";
-}
-	
-function newPatient()
-{
-	document.getElementById("new_patient").style.visibility="visible";
-}
-</script>
+{%if form.errors %}
+        <p style="color: red;">
+                    Please correct the error{{ form.errors|pluralize }} below.
+                            </p>
+                                {% endif %}
 
-<body onload="hideforms()">
-	<form method="post" action="{% url 'reception' %}">
-	{% csrf_token %}
-	<input type="radio" name="type" value="new" onclick="newPatient()"/>new patient<br>
-	<input type="radio" name="type" value="followup"/>Followup<br>
-	<input type="radio" name="type" value="continuation"/>Continuation<br>
-	
-	<!-- THIS IS FOR THE NEW PATIENT --!>
-	<div id="new_patient">
-		<table border="0" style="">
-			<tr>
-				<td>First Name: </td>
-				<td><input type="text" name="firstName" /></td>
-			</tr>
-			<tr>
-				<td>Middle Name: </td>
-				<td><input type="text" name="middleName" /></td>
-			</tr>
-			<tr>
-				<td>Last Name: </td>
-				<td><input type="text" name="lastName" /></td>
-			</tr>
-			<tr>
-				<td>Age: </td>
-				<td><input type="text" name="age" /></td>
-			</tr>
-			<tr>
-				<td>Address: </td>
-				<td><input type="text" name="address" /></td>
-			</tr>
-			<tr>
-				<td>Sex: </td>
-				<td><input type="radio" name="male" />Male</td>
-				<td><input type="radio" name="female" />Female</td>
-                <td><input type="radio" name="other" />Other</td>
-			</tr>
-			<tr>
-				<td>Blood Group: </td>
-				<td><input type="text" name="bloodGroup" /></td>
-			</tr>
-		</table>	
-	</div>
-	<div id="problems_form">
-		<table border="0">
-			<tr>
-				<td>Problem Stated:</td>
-				<td><input type="textarea" name="problems"/></td>
-			</tr>
-			<tr>
-				<td>Doctor:</td>
-				<td><select name="doctor" >
-						<option value="none" onclick="clearWorkingHr()">SELECT DOCTOR</option>
-					{% for x in doctors %} 
-						<option value="{{x.id}}" onclick="getDocWorkingHr('{{forloop.counter0}}')"> {{x.name}}</option>
-					{% endfor %}
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td>Time:</td>
-				<td><select name="time" id="time_option"></select></td>
-			</tr>	
-		</table>
-	<input type="submit" value="ok"/>
-	</form>
-</body>
-
-<script>
-
-	// getting corresponding working hour for the selected doctor
-	function getDocWorkingHr(index)
-	{
-		// index is the index of doctor, we find the corresponding working hour
-
-		// in order to find out the working hours today
-		var day = new Date();
-		day = day.getDay();
-
-		// get the json data from the server
-		var temp = '{{times|safe}}';
-		temp = JSON.parse(temp); // parse the json data
-
-		var workinghrs=temp[index][day].split(",");// working hrs today
-
-		var element = document.getElementById("time_option");
-		// create options
-		for(var z in workinghrs)
-			element.options[z]=new Option(workinghrs[z], workinghrs[z]);
-	}
-
-	function clearWorkingHr()
-	{
-		var workinghrs = document.getElementById("time_option");
-		// delete options
-		for(var z in workinghrs.options)
-		{
-			workinghrs.remove(workinghrs.options[z]);
-		}
-	}
-	
-</script>
+                                    <form action="{% url 'reception'%}" method="post">
+                                            <table>
+                                                        {{ form.as_table }}
+                                                                </table>
+                                                                        {% csrf_token %}
+                                                                                <input type="submit" value="Submit">
+                                                                                    </form>

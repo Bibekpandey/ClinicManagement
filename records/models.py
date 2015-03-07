@@ -5,19 +5,28 @@ from datetime import datetime
 # for the ranges of values like RBC count normal value lies between 12000 - 15000 cucmm(just example)
 
 class Range(models.Model):
-    startValue  = models.IntegerField(default=0)
-    endValue    = models.IntegerField(default=0)
+    startValue  = models.DecimalField(max_digits=12, decimal_places=5)
+    endValue    = models.DecimalField(max_digits=12, decimal_places=5)
     unit        = models.CharField(max_length=20)
 
     def __str__(self):
-        return self.startValue + " - " + self.endValue + " " + unit
+        return str(self.startValue) + " - " + str(self.endValue) + " " + self.unit
 
 
 # Test types like Haematology, Serology, Urine, etc.
 
 class TestType(models.Model):
     name        = models.CharField(max_length=30)
-    comments    = models.CharField(max_length=200)
+    comments    = models.CharField(max_length=200, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+# for the category of the tests like differential count, absolute count, etc
+
+class Category(models.Model):
+    name = models.CharField(max_length=50)
 
     def __str__(self):
         return self.name
@@ -27,6 +36,7 @@ class TestType(models.Model):
 # More clearly, a Haematology test consists of Lymphocyte counts, Neurophill counts and so on.
 
 class TestField(models.Model):
+    category    = models.ForeignKey('Category', blank=True, null=True)
     testType    = models.ForeignKey('TestType')
     name        = models.CharField(max_length=50)
     price       = models.IntegerField(default= 0)
@@ -45,9 +55,9 @@ class BooleanTestField(TestField):
 # field for tests having numerical results like RBC count
 
 class NumericTestField(TestField):
-    maleRange   = models.OneToOneField('Range', related_name="male_range")
-    femaleRange = models.OneToOneField('Range', related_name="female_range")
-    childRange  = models.OneToOneField('Range', related_name="child_range")
+    maleRange   = models.ForeignKey('Range', related_name="male_range")
+    femaleRange = models.ForeignKey('Range', related_name="female_range", null=True)
+    childRange  = models.ForeignKey('Range', related_name="child_range", blank=True)
 
 
 # for storing result
@@ -91,9 +101,13 @@ class Person(models.Model):
 
 # Doctor
 
-class Doctor(Person):
+class Doctor(models.Model):
+    name = models.CharField(max_length=50)
     hospital = models.CharField(max_length=50)
-    field = models.CharField(max_length=40)
+    field = models.CharField(max_length=40, blank=True)
+
+    def __str__(self):
+        return self.name + "  "+ self.hospital
 
 
 # Patient
