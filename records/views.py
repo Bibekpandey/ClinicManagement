@@ -45,3 +45,14 @@ class Reception(View):
                 return HttpResponse('invalid')
         else:
             return HttpResponse('not a post')
+
+class LabTest(View):
+    def get(self, request):
+        getvar = request.GET.get('testtype','').lower()
+        #return HttpResponse(getvar)
+        testtype = TestType.objects.filter(name = getvar)[0]
+        context = {'testtype' : testtype.name}
+        return render(request,'records/labtest.html',  context)
+
+    def post(self, request):
+        return HttpResponse("lab test")

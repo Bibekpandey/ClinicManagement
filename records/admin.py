@@ -5,5 +5,6 @@ admin.site.register(Person)
 admin.site.register(Patient)
 admin.site.register(Doctor)
 admin.site.register(Visit)
-
+admin.site.register(TestType)
+admin.site.register(TestField)
 
