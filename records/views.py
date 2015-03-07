@@ -76,8 +76,9 @@ class LabTest(View):
             return HttpResponse("invalid lab test query")
 
         testtype = testtype[0]
-        testfields = TestField.objects.filter(testType = testtype)
-        context = {'testtype' : testtype.name, 'testfields' : testfields}
+        fields_numeric = NumericTestField.objects.filter(testType = testtype)
+        fields_boolean = BooleanTestField.objects.filter(testType = testtype)
+        context = {'testtype' : testtype.name, 'fields_numeric' : fields_numeric, 'fields_boolean' : fields_boolean}
         return render(request,'records/labtest.html',  context)
 
     def post(self, request):

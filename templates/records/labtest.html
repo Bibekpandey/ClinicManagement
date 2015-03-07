@@ -1,8 +1,16 @@
 <h1> Test Type </h1>
 <h2> {{ testtype }} </h2> 
 
+numiric fields
 <ul>
-    {% for field in testfields %}
+    {% for field in fields_numeric %}
+    <li> {{ field }} -- {{ field.category }} -- {{ field.maleRange }} </li>
+    {% endfor %}
+</ul>
+
+boolean fields
+<ul>
+    {% for field in fields_boolean %}
     <li> {{ field }} -- {{ field.category }} </li>
     {% endfor %}
 </ul>
