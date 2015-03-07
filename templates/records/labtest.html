@@ -1,16 +1,47 @@
-<h1> Test Type </h1>
-<h2> {{ testtype }} </h2> 
+{% load staticfiles %}
 
-numiric fields
-<ul>
-    {% for field in fields_numeric %}
-    <li> {{ field }} -- {{ field.category }} -- {{ field.maleRange }} </li>
-    {% endfor %}
-</ul>
+<!DOCTYPE html>
 
-boolean fields
-<ul>
-    {% for field in fields_boolean %}
-    <li> {{ field }} -- {{ field.category }} </li>
-    {% endfor %}
-</ul>
+
+<html>
+
+<head>
+    <title>{{ testtype }} </title>
+</head>
+
+<body>
+    <h1> Test Type </h1>
+    <h2> {{ testtype }} </h2> 
+
+    numiric fields
+    <div id="numeric">
+        <ul>
+            {% for field in fields_numeric %}
+            <li> <button type="button" id="numeric {{ field }}" onClick="selectionNumeric(this.id)" > {{ field }} -- {{ field.category }} -- {{ field.maleRange }} </button> </li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+    boolean fields
+    <div id="boolean">
+        <ul>
+            {% for field in fields_boolean %}
+            <li> <button type="button" id="boolean {{ field }}" onClick="selectionBoolean(this.id)"> {{ field }} -- {{ field.category }} </button> </li>
+            {% endfor %}
+        </ul>
+    </div>
+   
+    <h2>selected fields </h2>
+    <div id="selected">
+    </div>
+
+    <form action = "{% url 'labtest' %}" method="post">
+    {% csrf_token %}
+        <input type="submit" value="Submit">
+    </form>
+
+</body>
+
+    <script src="{% static 'records/js/labtest.js' %}"></script>
+    
+</html>
