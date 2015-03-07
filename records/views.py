@@ -49,9 +49,14 @@ class Reception(View):
 class LabTest(View):
     def get(self, request):
         getvar = request.GET.get('testtype','').lower()
-        #return HttpResponse(getvar)
-        testtype = TestType.objects.filter(name = getvar)[0]
-        context = {'testtype' : testtype.name}
+        testtype = TestType.objects.filter(name = getvar)
+
+        if len(testtype) == 0:
+            return HttpResponse("invalid lab test query")
+
+        testtype = testtype[0]
+        testfields = TestField.objects.filter(testType = testtype)
+        context = {'testtype' : testtype.name, 'testfields' : testfields}
         return render(request,'records/labtest.html',  context)
 
     def post(self, request):

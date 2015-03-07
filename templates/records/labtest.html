@@ -1,2 +1,8 @@
 <h1> Test Type </h1>
 <h2> {{ testtype }} </h2> 
+
+<ul>
+    {% for field in testfields %}
+        <li> {{ field }} </li>
+    {% endfor %}
+</ul>
