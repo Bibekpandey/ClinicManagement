@@ -17,7 +17,7 @@
     <div id="numeric">
             {% for field in fields_numeric %}
             <div id = "{{ field }}" onClick="selectionNumeric(this.id, '{{field.maleRange}}', '{{field.femaleRange}}', '{{field.childRange}}')">
-                <button type="button" > {{ field }} -- {{ field.category }} -- {{ field.maleRange }} </button>
+                <button type="button" > {{ field }} -- {{ field.category }} </button>
             </div>
             {% endfor %}
     </div>
