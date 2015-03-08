@@ -67,6 +67,8 @@ class Reception(View):
         else:
             return HttpResponse('not a post')
 
+
+
 class LabTest(View):
 
     def get(self, request):
@@ -86,9 +88,18 @@ class LabTest(View):
 
     # post request
     def post(self, request):
-        # a hidden type to now what type of test
+
+        # a hidden type to know what type of test
         getvar = request.POST.get('testtype','')
         testtype = TestType.objects.filter(name = getvar)[0]
+
+        # now remove testtype and csrfmiddlewaretoken, we don't need them
+        test = request.POST.copy()
+        test.pop('testtype')
+        test.pop('csrfmiddlewaretoken')
+        x = test.keys()
+        return HttpResponse(str(x))
+
         fields_numeric = NumericTestField.objects.filter(testType = testtype)
         fields_boolean = BooleanTestField.objects.filter(testType = testtype)
 

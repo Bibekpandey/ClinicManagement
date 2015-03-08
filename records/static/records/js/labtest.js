@@ -31,7 +31,7 @@ function selectionNumeric(id, maleRange, femaleRange, childRange)
         male.innerHTML = maleRange;
     }
 
-    if(maleRange != femaleRange && femaleRange == childRange)
+    else if(maleRange != femaleRange && femaleRange == childRange)
     {
         male = document.createElement("LABEL");
         male.innerHTML = maleRange;
@@ -59,11 +59,17 @@ function selectionNumeric(id, maleRange, femaleRange, childRange)
     newdiv.appendChild(label);
     newdiv.appendChild(input);
     if(male)
+    {
         newdiv.appendChild(male);
+    }
     if(female)
+    {
         newdiv.appendChild(female);
+    }
     if(child)
+    {
         newdiv.appendChild(child);
+    }
     newdiv.appendChild(button);
 
     /*
