@@ -16,7 +16,7 @@
     numeric fields
     <div id="numeric">
             {% for field in fields_numeric %}
-            <div id = "{{ field }}" onClick="selectionNumeric(this.id)">
+            <div id = "{{ field }}" onClick="selectionNumeric(this.id, '{{field.maleRange}}', '{{field.femaleRange}}', '{{field.childRange}}')">
                 <button type="button" > {{ field }} -- {{ field.category }} -- {{ field.maleRange }} </button>
             </div>
             {% endfor %}
@@ -36,9 +36,10 @@
     <h2>selected fields </h2>
     <form action = "{% url 'labtest' %}" method="post">
     {% csrf_token %}
+        <input type="hidden" name="testtype" value="{{testtype}}"/>
         <div id="selected">
         </div>
-        <input type="submit" value="Submit">
+        <input type="submit" value="Submit"/>
     </form>
 
 </body>

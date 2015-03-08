@@ -1,11 +1,10 @@
 
 // selection on click method
 // numeric form creation is to be done using this
-function selectionNumeric(id)
+function selectionNumeric(id, maleRange, femaleRange, childRange)
 {
     //get our  node with id that is to be hidden after selection
     var x = document.getElementById(id);
-    //numeric.removeChild(x);
     x.style.visibility = "hidden";
 
     var form_id = "form_"+id;
@@ -16,10 +15,39 @@ function selectionNumeric(id)
 
     //create label
     var label = document.createElement("LABEL");
+    label.innerHTML = id;
 
-    //extract the name part
-    var t = document.createTextNode(id);
-    label.appendChild(t);
+    var input = document.createElement("input");
+    input.setAttribute('type','number');
+    input.setAttribute('name', id );
+
+    var male = null;
+    var female = null;
+    var child = null;
+
+    if(maleRange == femaleRange && femaleRange==childRange)
+    {
+        male = document.createElement("LABEL");
+        male.innerHTML = maleRange;
+    }
+
+    if(maleRange != femaleRange && femaleRange == childRange)
+    {
+        male = document.createElement("LABEL");
+        male.innerHTML = maleRange;
+        female = document.createElement("LABEL");
+        female.innerHTML = femaleRange;
+    }
+
+    else
+    {
+        male = document.createElement("LABEL");
+        male.innerHTML = maleRange;
+        female = document.createElement("LABEL");
+        female.innerHTML = femaleRange;
+        child = document.createElement("LABEL");
+        child.innerHTML = childRange;
+    }
 
     //create button
     var button = document.createElement("input");
@@ -29,8 +57,19 @@ function selectionNumeric(id)
 
     //append
     newdiv.appendChild(label);
+    newdiv.appendChild(input);
+    if(male)
+        newdiv.appendChild(male);
+    if(female)
+        newdiv.appendChild(female);
+    if(child)
+        newdiv.appendChild(child);
     newdiv.appendChild(button);
 
+    /*
+    var temp = document.getElementsByTagName("form")[0];
+    temp.appendChild(newdiv);
+    */
 
     //append to our div
     var divappend = document.getElementById("selected");
@@ -72,11 +111,8 @@ function cancelClick(id)
 {
     //remove 'form_' part from form id
     var duplicate = id.slice(5,id.length);
-    var splitted = duplicate.split(" ");
-    var type = splitted[0];
-
-    var x = document.getElementById(duplicate);
-    x.style.visibility = "visible";
+    var v = document.getElementById(duplicate);
+    v.style.visibility = "visible";
 
     var x = document.getElementById(id);
     x.remove();

@@ -68,6 +68,7 @@ class Reception(View):
             return HttpResponse('not a post')
 
 class LabTest(View):
+
     def get(self, request):
         getvar = request.GET.get('testtype','').lower()
         testtype = TestType.objects.filter(name = getvar)
@@ -76,10 +77,34 @@ class LabTest(View):
             return HttpResponse("invalid lab test query")
 
         testtype = testtype[0]
+
         fields_numeric = NumericTestField.objects.filter(testType = testtype)
         fields_boolean = BooleanTestField.objects.filter(testType = testtype)
+
         context = {'testtype' : testtype.name, 'fields_numeric' : fields_numeric, 'fields_boolean' : fields_boolean}
         return render(request,'records/labtest.html',  context)
 
+    # post request
     def post(self, request):
-        return HttpResponse("lab test")
+        # a hidden type to now what type of test
+        getvar = request.POST.get('testtype','')
+        testtype = TestType.objects.filter(name = getvar)[0]
+        fields_numeric = NumericTestField.objects.filter(testType = testtype)
+        fields_boolean = BooleanTestField.objects.filter(testType = testtype)
+
+        temp = ''
+        
+        for field in fields_numeric:
+            if request.POST.get(field.name,''):
+                temp += (field.name + " " + request.POST.get(field.name,'') + "<br/>")
+
+        return HttpResponse(temp)
+
+
+
+
+
+
+
+
+
