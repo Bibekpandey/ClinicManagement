@@ -20,6 +20,8 @@ function selectionNumeric(id, maleRange, femaleRange, childRange)
     var input = document.createElement("input");
     input.setAttribute('type','number');
     input.setAttribute('name', id );
+    input.setAttribute('step', '0.01');
+    input.setAttribute('min', '0');
 
     var male = null;
     var female = null;
@@ -31,7 +33,7 @@ function selectionNumeric(id, maleRange, femaleRange, childRange)
         male.innerHTML = maleRange;
     }
 
-    if(maleRange != femaleRange && femaleRange == childRange)
+    else if(maleRange != femaleRange && femaleRange == childRange)
     {
         male = document.createElement("LABEL");
         male.innerHTML = maleRange;
