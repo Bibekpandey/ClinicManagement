@@ -113,7 +113,6 @@ class Doctor(models.Model):
 # Patient
 
 class Patient(Person):
-   referredBy = models.OneToOneField('Doctor', null=True) 
    numberOfVisits = models.IntegerField(default=1)
    membership = models.CharField(max_length=40)
 
@@ -122,6 +121,7 @@ class Patient(Person):
 
 class Visit(models.Model):
     patient = models.ForeignKey('Patient')
+    referredBy = models.ForeignKey('Doctor', null=True) 
     date = models.DateTimeField(default=datetime.now())
     totalBill = models.IntegerField(default=0)
     comments = models.CharField(max_length=100, blank=True)
@@ -135,7 +135,9 @@ class Visit(models.Model):
 class Test(models.Model):
     visit = models.ForeignKey('Visit')
     testType = models.ForeignKey('TestType')
+    reportOut = models.BooleanField(default=False) # stores whether report is out or not
     reportDate = models.DateTimeField(default=datetime.now()) # stores the date when the report was prepared
+    testDone = models.BooleanField(default=False) # stores whether test is carried out or not
 
     def __str__(self):
-        return self.testType.name + " ("+self.visit.patient+")"
+        return self.testType.name + " ("+self.visit.patient.name+")"

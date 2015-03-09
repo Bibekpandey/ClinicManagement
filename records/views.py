@@ -6,23 +6,11 @@ from records.forms import ContactForm, ReceptionForm
 import json
 from records.models import *
 
-def contact(request):
-    if request.method == 'POST':
-        form = ContactForm(request.POST)
-        if form.is_valid():
-            cd = form.cleaned_data
-            return HttpResponse(cd.errors)
-        else:
-            return HttpResponse('invalid form')
-    else:
-        form = ContactForm()
-        return render(request, 'records/reception.html', {'form':form})
-
-
 
 class Reception(View):
 
     def get(self, request):
+        x = TestType.objects.all()
         form  = ReceptionForm()
         return render(request, 'records/reception.html', {'form':form})
 
@@ -33,10 +21,9 @@ class Reception(View):
 
             form = ReceptionForm(request.POST)
 
-            if form.is_valid(): # check for patient, if already, make new visit object , if new, make new patient and visit object
+            if form.is_valid(): 
 
                 data = form.cleaned_data
-                patients = Patient.objects.filter(name=data['name'], contact=data['contact'])
 
                 if data['referred_by']: # this may be false too
                     # search for doctor
@@ -49,6 +36,8 @@ class Reception(View):
                 else:
                     doctor = None
 
+                # check for patient, if already, make new visit object , if new, make new patient and visit object
+                patients = Patient.objects.filter(name=data['name'], contact=data['contact'])
                 if len(patients) == 0:
                     #means, no such patient, create new
 
@@ -61,7 +50,16 @@ class Reception(View):
                 # now create visit object
                 visit = Visit(patient=patient)
                 visit.save()
-                return HttpResponse('created')
+
+                # create test elements, for different tests checked in the reception page
+                testtypes = TestType.objects.all()
+                for x in testtypes:
+                    if data[x.name]==True: ## means test is chosen
+                        # create new test object
+                        newtest = Test(visit=visit, testType=x)
+                        newtest.save()
+                return HttpResponseRedirect('reception')
+
             else:
                 return HttpResponse('invalid')
         else:
@@ -113,9 +111,21 @@ class LabTest(View):
 
 
 
+class Lab(View):
+    
+    def get(self, request):
+        context = {}
+        # get the visits of today
+        visits = Visit.objects.filter(date = datetime.now(), order_by=date)
+        patients = []
+        for x in visits:
+            patientTest = {}
+            tests = Test.objects.filter(testDone=False, visit=x)
+            patientTest['name'] = x.patients.name
+            patientTest['tests'] = tests
+            patients.append(patientTest)
 
+        return render(request, 'records/lab.html', context)
 
-
-
-
-
+    def post(self, request):
+        return HttpResponse('test')
