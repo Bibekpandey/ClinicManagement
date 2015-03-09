@@ -115,15 +115,9 @@ class Lab(View):
     
     def get(self, request):
         context = {}
-        # get the visits of today
-        visits = Visit.objects.filter(date = datetime.now(), order_by=date)
-        patients = []
-        for x in visits:
-            patientTest = {}
-            tests = Test.objects.filter(testDone=False, visit=x)
-            patientTest['name'] = x.patients.name
-            patientTest['tests'] = tests
-            patients.append(patientTest)
+
+        # get all the tests which have not been carried out 
+        tests = Test.objects.filter(testDone=False)
 
         return render(request, 'records/lab.html', context)
 
