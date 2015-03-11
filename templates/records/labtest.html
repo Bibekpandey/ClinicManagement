@@ -7,6 +7,7 @@
 
 <head>
     <title>{{ testtype }} </title>
+    <script> var field_selected = ''; </script>
 </head>
 
 <body>
@@ -19,6 +20,9 @@
             <div id = "{{ field }}" onClick="selectionNumeric(this.id, '{{field.maleRange}}', '{{field.femaleRange}}', '{{field.childRange}}')">
                 <button type="button" > {{ field }} -- {{ field.category }} </button>
             </div>
+            <script>
+                field_selected += "{{field}}" + ",";
+            </script>
             {% endfor %}
     </div>
    
@@ -29,12 +33,15 @@
             <div id = "{{ field }}" onClick="selectionBoolean(this.id, '{{field.positive}}', '{{field.negative}}')">
                 <button type="button" > {{ field }} -- {{ field.category }}</button>
             </div>
+            <script>
+                field_selected += "{{field}}" + ",";
+            </script>
             {% endfor %}
         </ul>
     </div>
    
     <h2>selected fields </h2>
-    <form action = "{% url 'labtest' %}" method="post">
+    <form name="testform" action = "{% url 'labtest' %}" method="post" onsubmit="return validate(field_selected)">
     {% csrf_token %}
         <input type="hidden" name="testtype" value="{{testtype}}"/>
         <div id="selected">

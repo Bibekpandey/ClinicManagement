@@ -1,4 +1,7 @@
 
+var numeric = [];
+var bool = [];
+
 // selection on click method
 // numeric form creation is to be done using this
 function selectionNumeric(id, maleRange, femaleRange, childRange)
@@ -154,3 +157,41 @@ function cancelClick(id)
     var x = document.getElementById(id);
     x.remove();
 }
+
+function validate(field_selected)
+{
+    var fields = field_selected.split(",");
+    var temp = "";
+    var count = 0;
+    for(var i=0; i<fields.length; ++i)
+    {
+        var field = fields[i];
+        var x = document.forms["testform"][field];
+        if(x)
+        {
+            count++;
+            var value = x.value;
+            if(!value)
+            {
+                alert("emtpy entry : " + field );
+                return false;
+            }
+        }
+    }
+    
+    if(count == 0)
+    {
+        alert("at least one field is requred... ");
+        return false;
+    }
+    alert("ok good ...");
+    return true;
+}
+
+
+
+
+
+
+
+
