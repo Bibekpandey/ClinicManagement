@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.generic import View
 from django.views.generic.edit import FormView
 from django.http import HttpResponse, Http404, HttpResponseRedirect
@@ -41,14 +41,14 @@ class Reception(View):
                 if len(patients) == 0:
                     #means, no such patient, create new
 
-                    patient = Patient(name=data['name'], contact=data['contact'], age=data['age'], address=data['address'], sex=data['sex'], membership='none', referredBy=doctor)
+                    patient = Patient(name=data['name'], contact=data['contact'], age=data['age'], address=data['address'], sex=data['sex'], membership='none')
                     patient.save()
                     # patient created
                 else:
                     patient = patients[0]
 
                 # now create visit object
-                visit = Visit(patient=patient)
+                visit = Visit(patient=patient, referredBy=doctor)
                 visit.save()
 
                 # create test elements, for different tests checked in the reception page
@@ -70,22 +70,21 @@ class Reception(View):
 class LabTest(View):
 
     def get(self, request):
-        getvar = request.GET.get('testtype','').lower()
-        testtype = TestType.objects.filter(name = getvar)
+            return HttpResponse('we dont need get')
 
-        if len(testtype) == 0:
-            return HttpResponse("invalid lab test query")
+    # post request
+    def post(self, request):
 
-        testtype = testtype[0]
+        testId = int(request.POST.get('testId', '0'))
+        testTypeId = int(request.POST.get('testTypeId', '0'))
+
+        testtype = get_object_or_404(TestType, pk=testTypeId)
 
         fields_numeric = NumericTestField.objects.filter(testType = testtype)
         fields_boolean = BooleanTestField.objects.filter(testType = testtype)
 
         context = {'testtype' : testtype.name, 'fields_numeric' : fields_numeric, 'fields_boolean' : fields_boolean}
         return render(request,'records/labtest.html',  context)
-
-    # post request
-    def post(self, request):
 
         # a hidden type to know what type of test
         getvar = request.POST.get('testtype','')
@@ -122,7 +121,8 @@ class Lab(View):
         context = {}
 
         # get all the tests which have not been carried out 
-        tests = Test.objects.filter(testDone=False)
+        tests = Test.objects.filter(reportOut=False)
+        context['tests'] = tests
 
         return render(request, 'records/lab.html', context)
 

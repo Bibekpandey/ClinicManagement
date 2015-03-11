@@ -1,0 +1,22 @@
+<form method="post" action="{% url 'labtest' %}">
+{% csrf_token %}
+<input id="hidden_test_id" type="hidden" name="testId" value="-1" />
+<input id="hidden_testType_id" type="hidden" name="testTypeId" value="-1" />
+{% for x in tests %}
+    <a href="" onclick="submitform('{{x.id}}', '{{x.testType.id}}');">{{x}}</a><br>
+{% endfor %}
+
+<script>
+function submitform(testId, testtypeId)
+{
+    var hiddentest = document.getElementById('hidden_test_id');
+    var hiddentesttype = document.getElementById('hidden_testType_id');
+    hiddentest.value = testId;
+    hiddentesttype.value = testtypeId;
+    var forms = document.getElementsByTagName('form');
+    var form = forms[0];
+    form.submit();
+    alert(); // adding alert() does the work, i.e goes to 'labtest'
+    // not adding alert() returns back here. Don't know what is going on here
+}
+</script>
