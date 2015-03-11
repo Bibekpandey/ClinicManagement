@@ -1,7 +1,4 @@
 
-var numeric = [];
-var bool = [];
-
 // selection on click method
 // numeric form creation is to be done using this
 function selectionNumeric(id, maleRange, femaleRange, childRange)
@@ -158,19 +155,32 @@ function cancelClick(id)
     x.remove();
 }
 
+
+// field_selected is the string of all the fields separeted by comma
 function validate(field_selected)
 {
+    //get individual field -> split by comma
     var fields = field_selected.split(",");
-    var temp = "";
+
+    //for checking is any field is selected
     var count = 0;
+
+    //main loop for validaiton
     for(var i=0; i<fields.length; ++i)
     {
         var field = fields[i];
+
+        //get element by 'name' from the our form named 'testform'
         var x = document.forms["testform"][field];
+
+        //if x is valid / exists
         if(x)
         {
+            //increase the check-counter
             count++;
             var value = x.value;
+
+            //if empty value
             if(!value)
             {
                 alert("emtpy entry : " + field );
@@ -178,7 +188,8 @@ function validate(field_selected)
             }
         }
     }
-    
+   
+    //if counter didnt increase -> no field is selected
     if(count == 0)
     {
         alert("at least one field is requred... ");
