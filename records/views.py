@@ -96,14 +96,19 @@ class LabTest(View):
         test.pop('testtype')
         test.pop('csrfmiddlewaretoken')
         x = test.keys()
-        return HttpResponse(str(x))
+        #return HttpResponse(str(x))
 
         fields_numeric = NumericTestField.objects.filter(testType = testtype)
         fields_boolean = BooleanTestField.objects.filter(testType = testtype)
 
         temp = ''
+
         
         for field in fields_numeric:
+            if request.POST.get(field.name,''):
+                temp += (field.name + " " + request.POST.get(field.name,'') + "<br/>")
+        
+        for field in fields_boolean:
             if request.POST.get(field.name,''):
                 temp += (field.name + " " + request.POST.get(field.name,'') + "<br/>")
 

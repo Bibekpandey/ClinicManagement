@@ -86,8 +86,9 @@ function selectionNumeric(id, maleRange, femaleRange, childRange)
 }
 
 // radio button type of form to be created here
-function selectionBoolean(id)
+function selectionBoolean(id, positive, negative)
 {
+    //alert(positive + " " + negative);
     //get our  node with id that is to be hidden after selection
     var x = document.getElementById(id);
     x.style.visibility = "hidden";
@@ -98,15 +99,43 @@ function selectionBoolean(id)
     newdiv.setAttribute('id', form_id);
 
     var label = document.createElement("LABEL");
-    var t = document.createTextNode(id);
-    label.appendChild(t);
+    label.innerHTML = id+ " : ";
+
+
+    //label for positive
+    var label_positive = document.createElement("LABEL");
+    label_positive.innerHTML = positive;
+
+    // radio button for positive
+    var radio_positive = document.createElement("input");
+    radio_positive.setAttribute("type", "radio");
+    radio_positive.setAttribute("name", id);
+    radio_positive.setAttribute("value", positive);
+
+    // label for negative
+    var label_negative = document.createElement("LABEL");
+    label_negative.innerHTML = negative;
+
+    var radio_negative = document.createElement("input");
+    radio_negative.setAttribute("type", "radio");
+    radio_negative.setAttribute("name", id);
+    radio_negative.setAttribute("value", negative);
+
 
     var button = document.createElement("input");
     button.type = "button";
     button.value = "cancel";
     button.addEventListener("click", function () { cancelClick(form_id); } );
 
+    // this is a div where radio button gets appended
+    var select = document.createElement("div");
+    select.appendChild(label_positive);
+    select.appendChild(radio_positive);
+    select.appendChild(label_negative);
+    select.appendChild(radio_negative);
+
     newdiv.appendChild(label);
+    newdiv.appendChild(select);
     newdiv.appendChild(button);
 
     var divappend = document.getElementById("selected");
