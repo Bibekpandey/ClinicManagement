@@ -83,35 +83,44 @@ class LabTest(View):
         fields_numeric = NumericTestField.objects.filter(testType = testtype)
         fields_boolean = BooleanTestField.objects.filter(testType = testtype)
 
-        context = {'testtype' : testtype.name, 'fields_numeric' : fields_numeric, 'fields_boolean' : fields_boolean}
+        context = {'testId':testId, 'testtype' : testtype.name, 'fields_numeric' : fields_numeric, 'fields_boolean' : fields_boolean}
         return render(request,'records/labtest.html',  context)
 
+
+
+# to process the lab form ( which results in report)
+def processLabForm(request):
+    if request.method=='POST':
         # a hidden type to know what type of test
-        getvar = request.POST.get('testtype','')
-        testtype = TestType.objects.filter(name = getvar)[0]
+        testtype = request.POST.get('testtype','')
+        testid = int(request.POST.get('testid', ''))
+        testObj = get_object_or_404(Test, pk=testid)
+
+        testtypeObj = TestType.objects.filter(name=testtype)[0]
 
         # now remove testtype and csrfmiddlewaretoken, we don't need them
-        test = request.POST.copy()
-        test.pop('testtype')
-        test.pop('csrfmiddlewaretoken')
-        x = test.keys()
-        #return HttpResponse(str(x))
+        postcopy = request.POST.copy()
+        postcopy.pop('csrfmiddlewaretoken')
+        postcopy.pop('testtype')
+        postcopy.pop('testid')
 
-        fields_numeric = NumericTestField.objects.filter(testType = testtype)
-        fields_boolean = BooleanTestField.objects.filter(testType = testtype)
+        # now we have all the fields(numeric and boolean) and their values in the postcopy dict, can be iterated
 
-        temp = ''
-
+        string = ''
+        for x in postcopy:
+            if 'boolean' in x: # means it is a boolean field
+                fieldname = x.split('boolean_')[1]
+                boolfield = get_object_or_404(BooleanTestField, name=fieldname)
+                boolresult = BooleanResult(value=int(postcopy[x]),test=testObj, field=boolfield)
+                boolresult.save()
+                
+            if 'numeric' in x: # means it is a numeric field
+                fieldname = x.split('numeric_')[1]
+                numericfield = get_object_or_404(NumericTestField, name=fieldname)
+                numericresult = NumericResult(field=numericfield, test=testObj, value=float(postcopy[x]))
+                numericresult.save()
         
-        for field in fields_numeric:
-            if request.POST.get(field.name,''):
-                temp += (field.name + " " + request.POST.get(field.name,'') + "<br/>")
-        
-        for field in fields_boolean:
-            if request.POST.get(field.name,''):
-                temp += (field.name + " " + request.POST.get(field.name,'') + "<br/>")
-
-        return HttpResponse(temp)
+        return HttpResponseRedirect('/index/lab/')
 
 
 

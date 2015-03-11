@@ -19,7 +19,7 @@ function selectionNumeric(id, maleRange, femaleRange, childRange)
 
     var input = document.createElement("input");
     input.setAttribute('type','number');
-    input.setAttribute('name', id );
+    input.setAttribute('name', 'numeric_'+id );
     input.setAttribute('step', '0.01');
     input.setAttribute('min', '0');
 
@@ -109,8 +109,8 @@ function selectionBoolean(id, positive, negative)
     // radio button for positive
     var radio_positive = document.createElement("input");
     radio_positive.setAttribute("type", "radio");
-    radio_positive.setAttribute("name", id);
-    radio_positive.setAttribute("value", positive);
+    radio_positive.setAttribute("name", 'boolean_'+id);
+    radio_positive.setAttribute("value", 1);
 
     // label for negative
     var label_negative = document.createElement("LABEL");
@@ -118,8 +118,8 @@ function selectionBoolean(id, positive, negative)
 
     var radio_negative = document.createElement("input");
     radio_negative.setAttribute("type", "radio");
-    radio_negative.setAttribute("name", id);
-    radio_negative.setAttribute("value", negative);
+    radio_negative.setAttribute("name", 'boolean_'+id);
+    radio_negative.setAttribute("value", 0);
 
 
     var button = document.createElement("input");
@@ -195,14 +195,5 @@ function validate(field_selected)
         alert("at least one field is requred... ");
         return false;
     }
-    alert("ok good ...");
     return true;
 }
-
-
-
-
-
-
-
-

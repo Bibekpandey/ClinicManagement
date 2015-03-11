@@ -83,7 +83,7 @@ class NumericResult(models.Model):
     value   = models.IntegerField(default=0)
 
     def __str__(self):
-        return self.field.name + " " + self.value
+        return self.field.name + " " + str(self.value)
 
 
 # A person

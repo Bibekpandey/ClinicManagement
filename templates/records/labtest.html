@@ -7,7 +7,6 @@
 
 <head>
     <title>{{ testtype }} </title>
-    <script> var field_selected = ''; </script>
 </head>
 
 <body>
@@ -41,9 +40,10 @@
     </div>
    
     <h2>selected fields </h2>
-    <form name="testform" action = "{% url 'labtest' %}" method="post" onsubmit="return validate(field_selected)">
+    <form name="testform" action = "{% url 'process_lab_form' %}" method="post" onsubmit="return validate(field_selected)">
     {% csrf_token %}
         <input type="hidden" name="testtype" value="{{testtype}}"/>
+        <input type="hidden" name="testid" value="{{testId}}"/>
         <div id="selected">
         </div>
         <input type="submit" value="Submit"/>
