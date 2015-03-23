@@ -86,6 +86,9 @@ class LabTest(View):
         context = {'testId':testId, 'testtype' : testtype.name, 'fields_numeric' : fields_numeric, 'fields_boolean' : fields_boolean}
         return render(request,'records/labtest.html',  context)
 
+def calculateBillTest(testid, testtypeObj):
+    test = get_object_or_404(Test, pk = testid)
+
 
 
 # to process the lab form ( which results in report)
@@ -105,21 +108,26 @@ def processLabForm(request):
         postcopy.pop('testid')
 
         # now we have all the fields(numeric and boolean) and their values in the postcopy dict, can be iterated
-
+        #for bill calculation of Test object
+        calculation = float(0)
         string = ''
         for x in postcopy:
             if 'boolean' in x: # means it is a boolean field
                 fieldname = x.split('boolean_')[1]
                 boolfield = get_object_or_404(BooleanTestField, name=fieldname)
                 boolresult = BooleanResult(value=int(postcopy[x]),test=testObj, field=boolfield)
+                calculation += boolfield.price         
                 boolresult.save()
                 
             if 'numeric' in x: # means it is a numeric field
                 fieldname = x.split('numeric_')[1]
                 numericfield = get_object_or_404(NumericTestField, name=fieldname)
                 numericresult = NumericResult(field=numericfield, test=testObj, value=float(postcopy[x]))
+                calculation += numericfield.price
                 numericresult.save()
-        
+        testObj.reportOut = True
+        testObj.bill = calculation
+        testObj.save();
         return HttpResponseRedirect('/index/lab/')
 
 
