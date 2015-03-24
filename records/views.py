@@ -3,6 +3,7 @@ from django.views.generic import View
 from django.views.generic.edit import FormView
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from records.forms import NewPatientForm, DoctorAndTestForm
+from django.core.urlresolvers import reverse
 import json
 from records.models import *
 
@@ -110,11 +111,6 @@ class LabTest(View):
         context = {'testId':testId, 'testtype' : testtype.name, 'fields_numeric' : fields_numeric, 'fields_boolean' : fields_boolean}
         return render(request,'records/labtest.html',  context)
 
-def calculateBillTest(testid, testtypeObj):
-    test = get_object_or_404(Test, pk = testid)
-
-
-
 # to process the lab form ( which results in report)
 def processLabForm(request):
     if request.method=='POST':
@@ -171,10 +167,53 @@ class Lab(View):
     def post(self, request):
         return HttpResponse('test')
 
+# our generalized login system -> works for both @reception and @lab
 class Login(View):
-
+    # for logintype
+    logintype = None
+    
+    #counstructor shit
+    def __init__(self, logintype):
+        self.logintype = logintype
+    
+    # get methid
     def get(self, request):
-        HttpResponse("login")
+        context = {}
+        context['logintype'] = self.logintype
+        return render(request, 'records/login.html', context)
 
+    # post method
     def post(self, request):
-        HttpResponse("login post")
+        error = None
+        context = {}
+
+        username = request.POST.get('username', '')
+        password = request.POST.get('password', '')
+        logintype = request.POST.get('logintype', '')
+        context['logintype'] = logintype
+
+        # for redirecting things
+        redirect = ''
+        if(logintype == "lab"):
+            redirect="lab"
+        else:
+            redirect = "reception"
+
+        user = None
+        if username=='' or password=='':
+            error = "username/password cannot be empty :D"
+            context['error'] = error
+            return render(request, 'records/login.html', context)
+        else:
+            if logintype == "lab":
+                user = LabStaff.objects.filter(username = username, password = password)
+            if logintype == "reception":
+                user = ReceptionStaff.objects.filter(username = username, password = password)
+
+        if len(user) == 0:
+            error = "invalid username/password"
+            context['error'] = error
+            return render(request, 'records/login.html', context)
+        else:
+            return HttpResponseRedirect(reverse(redirect))
+
