@@ -1,259 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>Clinic Management system</title>
-
-    {% load staticfiles %}
-
-    <!-- Bootstrap Core CSS -->
-    <link href="{% static 'records/css/bootstrap.css' %}" type="text/css" rel="stylesheet">
-
-    <!-- Custom CSS -->
-    <link href="{% static 'records/css/sb-admin.css' %}" type="text/css" rel="stylesheet">
-
-    <!-- Morris Charts CSS -->
-    <link href="{% static 'records/css/plugins/morris.css' %}" rel="stylesheet">
-
-</head>
-
-<body>
-
-    <div id="wrapper">
-        <!-- Navigation -->
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="index.html">Clinic Management System</a>
-            </div>
-            <!-- Top Menu Items -->
-            <ul class="nav navbar-right top-nav">
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bell"></i> <b class="caret"></b></a>
-                    <ul class="dropdown-menu alert-dropdown">
-                        <li>
-                            <a href="#">Notice <span class="label label-default">Alert Badge</span></a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">View All</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gear fa-fw"></i> Logged in as <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="#"><i class="fa fa-fw fa-user"></i> Profile</a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-            <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
-            <div class="collapse navbar-collapse navbar-ex1-collapse">
-                <ul class="nav navbar-nav side-nav">
-                    <li>
-                        <a href="index.html"><i class="fa fa-fw fa-cloud"></i> Dashboard</a>
-                    </li>
-                    <li class="active">
-                        <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-edit"></i> Reception <i class="fa fa-fw fa-caret-down"></i></a>
-                        <ul id="demo" class="collapse">
-                            <li>
-                                <a href="reception.html"><i class="fa fa-fw fa-user"></i> New Patient</a>
-                            </li>
-                            <li>
-                                <a href="blank-page.html"><i class="fa fa-fw fa-money"></i> Billing</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="lab.html"><i class="fa fa-fw fa-flask"></i> Lab Staff</a>
-                    </li>
-
-                    <li>
-                        <a href="blank-page.html"><i class="fa fa-fw fa-hospital-o"></i> Pharmacist</a>
-                    </li>
-                    <li>
-                        <a href="bootstrap-grid.html"><i class="fa fa-fw fa-medkit"></i> Doctor</a>
-                    </li>
-                    <li>
-                        <a href="blank-page.html"><i class="fa fa-fw fa-bar-chart-o"></i> Report</a>
-                    </li>
-                    <li>
-                        <a href="blank-page.html"><i class="fa fa-fw fa-sort-amount-asc"></i> Report</a>
-                    </li>
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </nav>
-
-        <div id="page-wrapper">
-            <div class="container-fluid">
-                <!-- Page Heading -->
-                <div class="row">
-                    <div class="col-lg-12">
-                        <h1 class="page-header">
-                            Reception  <small>Patient's Info</small>
-                        </h1>
-                        <ol class="breadcrumb">
-                            <li>
-                                <i class="fa fa-home"></i>  <a href="index.html">Dashboard</a>
-                            </li>
-                            <li>
-                                <i class="fa fa-edit"></i> Reception
-                            </li>
-                            <li class="active">
-                                <i class="fa fa-edit"></i> New Patient
-                            </li>
-                        </ol>
-                    </div>
-                </div><!--end breadcrumb-->
-
-                <div id="error_message">
-                {% if error %}
-                <p>{{error}}</p>
-                {% endif %}
-                </div>
-
-                <form action="{% url 'reception'%}" method="post">
-                <div class="row">
-                    <div class="col-lg-6 col-lg-offset-2">
-                        <form role="form">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h2 class="panel-title">
-                                        Personal Information
-                                    </h2>
-                            </div>
-                            <div class="panel-body">
-                                <div class="form-group">
-                                    <label>Name</label>
-                                    <input class="form-control" placeholder="Name">
-                                </div>
-                            
-                                <div class="form-group">
-                                    <label>Sex</label>
-                                    <div class="radio">
-                                        <label class="radio-inline">
-                                            <input type="radio" name="optionsRadiosInline" id="optionsRadiosInline1" value="option1" checked>Male
-                                        </label>
-                                        <label class="radio-inline">
-                                            <input type="radio" name="optionsRadiosInline" id="optionsRadiosInline2" value="option2">Female
-                                        </label>
-                                        <label class="radio-inline">
-                                            <input type="radio" name="optionsRadiosInline" id="optionsRadiosInline3" value="option3">Other
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Address</label>
-                                    <input class="form-control" placeholder="Address">
-                                </div>
-                                <div class="form-group">
-                                    <label>Contact Number</label>
-                                    <input class="form-control" placeholder="Contact Number">
-                                </div>
-                                <div class="form-group">
-                                    <label>Age</label>
-                                    <input class="form-control" placeholder="Age" type="number">
-                                </div>
-                            </div>
-                            </div>
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h2 class="panel-title">
-                                        Medical information
-                                    </h2>
-                                </div>
-                                <div class="panel-body">
-                                     <div class="form-group">
-                                        <label>Referred By</label>
-                                        <label class="checkbox-inline">
-                                            <input type="checkbox">   Y
-                                        </label>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Medical Section</label>
-                                        <input class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Doctor's name</label>
-                                        <select class="form-control">
-                                            <option placeholder="Doctor's name"></option>
-                                            <option>2</option>
-                                            <option>3</option>
-                                            <option>4</option>
-                                            <option>5</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Hospital</label>
-                                        <input class="form-control">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h2 class="panel-title">Test Information</h2>
-                                </div>
-                                <div class="panel-body">
-                                    <div class="form-group">
-                                        <label>Tests</label>
-                                        <div class="checkbox">
-                                            <label>
-                                                <input type="checkbox" value="">Haematology
-                                            </label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label>
-                                                <input type="checkbox" value="">Serology
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-success">Submit</button>
-                            <button type="reset" class="btn btn-default">Reset</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}" />
+<body onload="Load()">
+    
+    <div id="error_message">
+        {% if error %}
+        <p> {{error}}</p>
+        {% endif %}
     </div>
-    <!-- /#wrapper -->
 
-    <!-- jQuery -->
-    <script src="{% static 'records/js/jquery.js' %}"></script>
-
-    <!-- Bootstrap Core JavaScript -->
-    <script src="{% static 'records/js/bootstrap.min.js' %}"></script>
-
-    <!-- Morris Charts JavaScript -->
-    <script src="{% static 'records/js/plugins/morris/raphael.min.js' %}"></script>
-    <script src="{% static 'records/js/plugins/morris/morris.min.js' %}"></script>
-    <script src="{% static 'records/js/plugins/morris/morris-data.js' %}"></script>
+    <form action="{% url 'reception'%}" method="post">
+    <p>New patient
+        <input type="radio" name="new_patient" value="1" onclick="hide('existing_patient')"/>
+    </p>
+    <p>Existing patient
+        <input type="radio" name="new_patient" value="0" onclick="hide('new_patient')"/>
+    </p>
+    
+    <div class="patient_data" id="existing_patient">
+        <p> Patient Id:
+        <input type="text" name="patient_id" />
+        </p>
+    </div>
+    
+    <div class="patient_data" id="new_patient">
+        
+        <table>
+            {{ newPatientForm.as_table }}
+        </table>
+        {% csrf_token %}
+    </div>
+    <div class="patient_data" id="doc_and_test">
+        <table>
+            {{docAndTestForm.as_table}}
+        </table>
+    </div>
+        <input type="submit" value="Submit">
+    </form>
 
 </body>
 
-</html>
+<script>
+    function hide(id)
+    {
+        elements = document.getElementsByClassName('patient_data');
+        for(x in elements)
+        {
+            if(elements[x].id==id)
+                elements[x].style.display="none";
+            else
+                elements[x].style.display="block";
+        }
+    }
+    function Load()
+    {
+        elements = document.getElementsByClassName('patient_data');
+        for(x in elements)
+            elements[x].style.display="none";
+    } 
+</script>
