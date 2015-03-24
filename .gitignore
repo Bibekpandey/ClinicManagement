@@ -1,2 +1,5 @@
 *.pyc
-bootstrap.*
+interface.jpg
+testenv
+env
+*.swp

@@ -170,3 +170,11 @@ class Lab(View):
 
     def post(self, request):
         return HttpResponse('test')
+
+class Login(View):
+
+    def get(self, request):
+        HttpResponse("login")
+
+    def post(self, request):
+        HttpResponse("login post")

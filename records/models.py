@@ -142,3 +142,17 @@ class Test(models.Model):
 
     def __str__(self):
         return self.testType.name + " ("+self.visit.patient.name+")"
+
+class LabStaff(models.Model):
+    username = models.CharField(max_length = 50)
+    password = models.CharField(max_length = 200)
+
+    def __str__(self):
+        return "labstaff : " + self.username
+
+class ReceptionStaff(models.Model):
+    username = models.CharField(max_length = 50)
+    password = models.CharField(max_length = 200)
+
+    def __str__(self):
+        return "receptionstaff : " + self.username
