@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic import View
 from django.views.generic.edit import FormView
 from django.http import HttpResponse, Http404, HttpResponseRedirect
-from records.forms import ContactForm, ReceptionForm
+from records.forms import NewPatientForm, DoctorAndTestForm
 import json
 from records.models import *
 
@@ -11,8 +11,9 @@ class Reception(View):
 
     def get(self, request):
         x = TestType.objects.all()
-        form  = ReceptionForm()
-        return render(request, 'records/reception.html', {'form':form})
+        newPatientForm = NewPatientForm()
+        docAndTestForm= DoctorAndTestForm()
+        return render(request, 'records/reception.html', {'newPatientForm':newPatientForm, 'docAndTestForm':docAndTestForm})
 
 
     def post(self, request):
@@ -119,6 +120,10 @@ def processLabForm(request):
                 numericfield = get_object_or_404(NumericTestField, name=fieldname)
                 numericresult = NumericResult(field=numericfield, test=testObj, value=float(postcopy[x]))
                 numericresult.save()
+
+        # test's reportOut is true now
+        testObj.reportOut = True
+        testObj.save()
         
         return HttpResponseRedirect('/index/lab/')
 
