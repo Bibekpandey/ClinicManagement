@@ -1,0 +1,60 @@
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}" />
+<body onload="Load()">
+    
+    <div id="error_message">
+        {% if error %}
+        <p> {{error}}</p>
+        {% endif %}
+    </div>
+
+    <form action="{% url 'reception'%}" method="post">
+    <p>New patient
+        <input type="radio" name="new_patient" value="1" onclick="hide('existing_patient')"/>
+    </p>
+    <p>Existing patient
+        <input type="radio" name="new_patient" value="0" onclick="hide('new_patient')"/>
+    </p>
+    
+    <div class="patient_data" id="existing_patient">
+        <p> Patient Id:
+        <input type="text" name="patient_id" />
+        </p>
+    </div>
+    
+    <div class="patient_data" id="new_patient">
+        
+        <table>
+            {{ newPatientForm.as_table }}
+        </table>
+        {% csrf_token %}
+    </div>
+    <div class="patient_data" id="doc_and_test">
+        <table>
+            {{docAndTestForm.as_table}}
+        </table>
+    </div>
+        <input type="submit" value="Submit">
+    </form>
+
+</body>
+
+<script>
+    function hide(id)
+    {
+        elements = document.getElementsByClassName('patient_data');
+        for(x in elements)
+        {
+            if(elements[x].id==id)
+                elements[x].style.display="none";
+            else
+                elements[x].style.display="block";
+        }
+    }
+    function Load()
+    {
+        elements = document.getElementsByClassName('patient_data');
+        for(x in elements)
+            elements[x].style.display="none";
+    } 
+</script>

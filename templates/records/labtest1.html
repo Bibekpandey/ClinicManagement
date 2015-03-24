@@ -1,0 +1,60 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+
+
+<html>
+
+<head>
+    <title>{{ testtype }} </title>
+<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}" />
+</head>
+
+<body>
+    <h1> Test Type </h1>
+    <h2> {{ testtype }} </h2> 
+    <script>
+        var field_selected = "";
+    </script>
+
+    numeric fields
+    <div id="numeric">
+            {% for field in fields_numeric %}
+            <div id = "{{ field }}" onClick="selectionNumeric(this.id, '{{field.maleRange}}', '{{field.femaleRange}}', '{{field.childRange}}')">
+                <button type="button" > {{ field }} -- {{ field.category }} </button>
+            </div>
+            <script>
+                field_selected += "numeric_" + "{{field}}" + ",";
+            </script>
+            {% endfor %}
+    </div>
+   
+    <br/>
+    boolean fields
+    <div id="boolean">
+            {% for field in fields_boolean %}
+            <div id = "{{ field }}" onClick="selectionBoolean(this.id, '{{field.positive}}', '{{field.negative}}')">
+                <button type="button" > {{ field }} -- {{ field.category }}</button>
+            </div>
+            <script>
+                field_selected += "boolean_" +  "{{field}}" + ",";
+            </script>
+            {% endfor %}
+        </ul>
+    </div>
+   
+    <h2>selected fields </h2>
+    <form name="testform" action = "{% url 'process_lab_form' %}" method="post" onsubmit="return validate(field_selected)">
+    {% csrf_token %}
+        <input type="hidden" name="testtype" value="{{testtype}}"/>
+        <input type="hidden" name="testid" value="{{testId}}"/>
+        <div id="selected">
+        </div>
+        <input type="submit" value="Submit"/>
+    </form>
+
+</body>
+
+    <script src="{% static 'records/js/labtest.js' %}"></script>
+    
+</html>

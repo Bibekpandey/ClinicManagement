@@ -2,8 +2,8 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic import View
 from django.views.generic.edit import FormView
 from django.http import HttpResponse, Http404, HttpResponseRedirect
+from records.forms import NewPatientForm, DoctorAndTestForm
 from django.core.urlresolvers import reverse
-from records.forms import ContactForm, ReceptionForm
 import json
 from records.models import *
 
@@ -11,60 +11,84 @@ from records.models import *
 class Reception(View):
 
     def get(self, request):
-        x = TestType.objects.all()
-        form  = ReceptionForm()
-        return render(request, 'records/reception.html', {'form':form})
+        newPatientForm = NewPatientForm()
+        docAndTestForm= DoctorAndTestForm()
+        return render(request, 'records/reception.html', {'newPatientForm':newPatientForm, 'docAndTestForm':docAndTestForm})
 
 
     def post(self, request):
-
-        if request.method == 'POST':
-
-            form = ReceptionForm(request.POST)
-
-            if form.is_valid(): 
-
-                data = form.cleaned_data
-
-                if data['referred_by']: # this may be false too
-                    # search for doctor
-                    doctors = Doctor.objects.filter(name=data['doctor_name'], hospital=data['hospital'])
-                    if len(doctors)==0:
-                        doctor = Doctor(name=data['doctor_name'], hospital=data['hospital'])
-                        doctor.save()
-                    else:
-                        doctor = doctors[0]
-                else:
-                    doctor = None
-
-                # check for patient, if already, make new visit object , if new, make new patient and visit object
-                patients = Patient.objects.filter(name=data['name'], contact=data['contact'])
-                if len(patients) == 0:
-                    #means, no such patient, create new
-
-                    patient = Patient(name=data['name'], contact=data['contact'], age=data['age'], address=data['address'], sex=data['sex'], membership='none')
-                    patient.save()
-                    # patient created
-                else:
+        error = None
+        newpatientform = NewPatientForm()
+        try:
+            if request.method == 'POST':
+                # check if it is new patient or not
+                if request.POST['new_patient']=="1":
+                    newpatientform = NewPatientForm(request.POST or None)
+    
+                    if newpatientform.is_valid(): 
+    
+                        data = newpatientform.cleaned_data
+    
+                        # check for patient, if already, send error msg
+                        patients = Patient.objects.filter(name=data['name'], contact=data['contact'])
+                        if len(patients) > 0:
+                            raise Exception('The patient already exists')
+    
+                        # create new patient
+                        patient = Patient(name=data['name'], contact=data['contact'], age=data['age'], address=data['address'], sex=data['sex'], membership='none')
+                        patient.save()
+                        # patient created
+    
+                    else:   # if form is not valid
+                        error='invalid form'
+                        return render(request, 'records/reception.html', {'error':error, 'newPatientForm':newpatientform, 'docAndTestForm':docAndTestForm})
+                        raise Exception('invalid form')
+    
+                else: # if patient is existing patient
+                    patientId = int(request.POST.get('patient_id','-1'))
+                    if patientId == -1:
+                        raise Exception('invalid id')
+                    patients = Patient.objects.filter(pk=patientId)
+                    if len(patients)==0:
+                        raise Exception('id doesnot exist')
                     patient = patients[0]
 
-                # now create visit object
-                visit = Visit(patient=patient, referredBy=doctor)
-                visit.save()
+                # now get doctor and test data
+                docandtestform = DoctorAndTestForm(request.POST or None)
+                if docandtestform.is_valid():
+                    data = docandtestform.cleaned_data
+                    if data['referred_by']:
+                        docname = data['doctor_name']
+                        hospital = data['hospital']
 
-                # create test elements, for different tests checked in the reception page
-                testtypes = TestType.objects.all()
-                for x in testtypes:
-                    if data[x.name]==True: ## means test is chosen
-                        # create new test object
-                        newtest = Test(visit=visit, testType=x)
-                        newtest.save()
-                return HttpResponseRedirect('reception')
+                        doctor = None
+                        # check if doctor exists, 
+                        doctors = Doctor.objects.filter(name=docname,hospital=hospital)
+                        if len(doctors) == 0 : # create new doctor
+                            doctor = Doctor(name=docname, hospital=hospital)
+                            doctor.save()
+                        else:
+                            doctor = doctors[0]
+    
+                    # now create visit object
+                    visit = Visit(patient=patient, referredBy=doctor)
+                    visit.save()
 
+                    # create test elements, for different tests checked in the reception page
+                    testtypes = TestType.objects.all()
+                    for x in testtypes:
+                        if data[x.name]==True: ## means test is chosen
+                            # create new test object
+                            newtest = Test(visit=visit, testType=x)
+                            newtest.save()
+                    return HttpResponseRedirect('/index/reception/')
             else:
-                return HttpResponse('invalid')
-        else:
-            return HttpResponse('not a post')
+                return HttpResponse('not a post request')
+        except Exception as e:
+            error = e.args[0]
+            return render(request, 'records/reception.html', {'error':error, 'newPatientForm':newpatientform})
+        except ValueError:
+            return HttpResponse('valueerrro')
 
 
 
@@ -121,6 +145,7 @@ def processLabForm(request):
                 numericresult = NumericResult(field=numericfield, test=testObj, value=float(postcopy[x]))
                 calculation += numericfield.price
                 numericresult.save()
+
         testObj.reportOut = True
         testObj.bill = calculation
         testObj.save();
