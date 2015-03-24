@@ -1,0 +1,45 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title> REPORT DISPLAY </title>
+</head>
+
+<body>
+    <h2> {{ name }} </h2>
+    <h2> {{ contact }} </h2>
+
+    <form name = "report" method="post" action="{% url 'reportdetail' %}">
+    {% csrf_token %}
+        <input id="hidden_name_id" type="hidden" name="name" value="-1" />
+        <input id="hidden_contact_id" type="hidden" name="contact" value="-1" />
+        <input id="hidden_date_id" type="hidden" name="date" value = "-1" />
+    {% for visit in visits %}
+    <a href="#" onclick="submitform('{{name}}', '{{ contact }}', '{{visit.date}}');">{{ visit.date }}</a><br>
+    {% endfor %}
+
+
+</body>
+
+<script>
+function submitform(name, contact, datetime)
+{
+    var hiddenname = document.getElementById("hidden_name_id");
+    var hiddencontact = document.getElementById("hidden_contact_id");
+    var hiddendate = document.getElementById("hidden_date_id");
+
+    hiddenname.value = name;
+    hiddencontact.value = contact;
+    hiddendate.value = datetime;
+    
+    var forms = document.getElementsByTagName('form');
+    var form = forms[0];
+    form.submit();
+    // not adding alert() returns back here. Don't know what is going on here
+}
+</script>
+
+</html>

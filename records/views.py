@@ -6,6 +6,8 @@ from records.forms import NewPatientForm, DoctorAndTestForm
 from django.core.urlresolvers import reverse
 import json
 from records.models import *
+from django.utils.timezone import get_current_timezone
+from datetime import datetime
 
 
 class Reception(View):
@@ -216,4 +218,70 @@ class Login(View):
             return render(request, 'records/login.html', context)
         else:
             return HttpResponseRedirect(reverse(redirect))
+
+# report view
+class Report(View):
+
+    def get(self, request):
+        context = {}
+
+        #our query string for fetching patient information
+        querystring = request.GET.get('patient','')
+
+        # if multiple parameter -> separated by ,
+        splitted = querystring.split(',')
+        if len(splitted) == 1 or len(splitted)>2:
+            return HttpResponse("expected only two query parameters separated by ',' ")
+
+        patient_name = splitted[0].strip()
+        patient_contact = ''
+        patient_contact = splitted[1].strip()
+        
+        patients = Patient.objects.filter(name = patient_name, contact = patient_contact)
+        if len(patients) == 0:
+            return HttpResponse("no such patient LOL")
+        
+        patient = patients[0]
+        visits = Visit.objects.filter(patient = patient).order_by('-date')
+
+        context['name'] = patient_name
+        context['contact'] = patient_contact
+
+        context['visits'] = visits
+        return render(request, 'records/report.html', context)
+
+    def post(self, request):
+        return HttpResponse("report")
+
+
+class ReportDetail(View):
+
+    def get(self, request):
+        return HttpResponse("no get method")
+
+    def post(self, request):
+        name = request.POST.get("name","")
+        contact = request.POST.get("contact","")
+        date = request.POST.get("date", "")
+
+        tz = get_current_timezone()
+        date = datetime.strptime(date, "%B %d, %Y, %I:%M %p")
+
+        patient = Patient.objects.filter(name = name, contact = contact)[0]
+        visit = Visit.objects.filter(patient = patient, date=date)[0]
+
+        return HttpResponse(name + " " + contact + " " + date)
+
+
+
+
+
+
+
+
+
+
+
+
+
 

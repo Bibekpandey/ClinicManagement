@@ -11,6 +11,8 @@ urlpatterns = patterns('',
      url(r'^processlabform/',processLabForm , name='process_lab_form'),
      url(r'^login/reception/', Login.as_view(logintype='reception'), name='login_reception'),
      url(r'^login/lab/', Login.as_view(logintype='lab'), name='login_lab'),
+     url(r'report/', Report.as_view(), name='report'),
+     url(r'reportdetail/', ReportDetail.as_view(), name='reportdetail')
     # url(r'^blog/', include('blog.urls')),
 
 )
