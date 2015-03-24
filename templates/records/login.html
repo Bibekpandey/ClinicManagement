@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title> LOGIN </title>
+</head>
+
+<body>
+    <script>
+        
+    </script>
+    <h2>{{ logintype }} </h2>
+    <h2> {{ error }} </h2>
+    <form id="login" action="{% url 'login_lab' %}"  method="post">
+        {% csrf_token %}
+        <input id="hidden_test_id" type="hidden" name="logintype" value="{{ logintype }}" />
+        <label> USERNAME </label>
+        <input type='text' name='username' placeholder='username' />
+        <br />
+        <label> PASSWORD </label>
+        <input type='password' name='password'placeholder='password' />
+        <br />
+        <input type='submit' value='submit' />
+    </form>
+</body>
+
+</html>
