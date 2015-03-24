@@ -14,3 +14,6 @@ admin.site.register(BooleanResult)
 admin.site.register(Category)
 admin.site.register(Test)
 admin.site.register(Range)
+
+admin.site.register(LabStaff)
+admin.site.register(ReceptionStaff)

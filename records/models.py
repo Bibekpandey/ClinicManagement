@@ -39,7 +39,7 @@ class TestField(models.Model):
     category    = models.ForeignKey('Category', blank=True, null=True)
     testType    = models.ForeignKey('TestType')
     name        = models.CharField(max_length=50)
-    price       = models.IntegerField(default= 0)
+    price       = models.FloatField(default= 0)
 
     def __str__(self):
         return self.name
@@ -80,7 +80,7 @@ class BooleanResult(models.Model):
 class NumericResult(models.Model):
     field   = models.ForeignKey('NumericTestField') # which field it belongs to
     test    = models.ForeignKey('Test') # which test does it belongs to
-    value   = models.IntegerField(default=0)
+    value   = models.FloatField(default=0)
 
     def __str__(self):
         return self.field.name + " " + str(self.value)
@@ -123,7 +123,7 @@ class Visit(models.Model):
     patient = models.ForeignKey('Patient')
     referredBy = models.ForeignKey('Doctor', null=True) 
     date = models.DateTimeField(default=datetime.now())
-    totalBill = models.IntegerField(default=0)
+    totalBill = models.FloatField(default=0)
     comments = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
@@ -138,6 +138,21 @@ class Test(models.Model):
     reportOut = models.BooleanField(default=False) # stores whether report is out or not
     reportDate = models.DateTimeField(default=datetime.now()) # stores the date when the report was prepared
     testDone = models.BooleanField(default=False) # stores whether test is carried out or not
+    bill = models.FloatField(default=0)
 
     def __str__(self):
         return self.testType.name + " ("+self.visit.patient.name+")"
+
+class LabStaff(models.Model):
+    username = models.CharField(max_length = 50)
+    password = models.CharField(max_length = 200)
+
+    def __str__(self):
+        return "labstaff : " + self.username
+
+class ReceptionStaff(models.Model):
+    username = models.CharField(max_length = 50)
+    password = models.CharField(max_length = 200)
+
+    def __str__(self):
+        return "receptionstaff : " + self.username
