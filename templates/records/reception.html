@@ -1,39 +1,41 @@
 {% load staticfiles %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}" />
 <body onload="Load()">
-<form action="{% url 'reception'%}" method="post">
-<p>New patient
-    <input type="radio" name="new_patient" value="1" onclick="hide('existing_patient')"/>
-</p>
-<p>Existing patient
-    <input type="radio" name="new_patient" value="0" onclick="hide('new_patient')"/>
-</p>
+    
+    <div id="error_message">
+        {% if error %}
+        <p> {{error}}</p>
+        {% endif %}
+    </div>
 
-<div class="patient_data" id="existing_patient">
-    <p> Patient Id:
-    <input type="text" name="patient_id" />
+    <form action="{% url 'reception'%}" method="post">
+    <p>New patient
+        <input type="radio" name="new_patient" value="1" onclick="hide('existing_patient')"/>
     </p>
-</div>
-
-<div class="patient_data" id="new_patient">
-{%if form.errors %}
-    <p style="color:red;">
-        Please correct the error{{ form.errors|pluralize }} below.
+    <p>Existing patient
+        <input type="radio" name="new_patient" value="0" onclick="hide('new_patient')"/>
     </p>
-{% endif %}
-
-    <table>
-        {{ newPatientForm.as_table }}
-    </table>
-    {% csrf_token %}
-</div>
-<div class="patient_data" id="doc_and_test">
-    <table>
-        {{docAndTestForm.as_table}}
-    </table>
-</div>
-    <input type="submit" value="Submit">
-</form>
+    
+    <div class="patient_data" id="existing_patient">
+        <p> Patient Id:
+        <input type="text" name="patient_id" />
+        </p>
+    </div>
+    
+    <div class="patient_data" id="new_patient">
+        
+        <table>
+            {{ newPatientForm.as_table }}
+        </table>
+        {% csrf_token %}
+    </div>
+    <div class="patient_data" id="doc_and_test">
+        <table>
+            {{docAndTestForm.as_table}}
+        </table>
+    </div>
+        <input type="submit" value="Submit">
+    </form>
 
 </body>
 

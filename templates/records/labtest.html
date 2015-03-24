@@ -13,6 +13,9 @@
 <body>
     <h1> Test Type </h1>
     <h2> {{ testtype }} </h2> 
+    <script>
+        var field_selected = "";
+    </script>
 
     numeric fields
     <div id="numeric">
@@ -21,7 +24,7 @@
                 <button type="button" > {{ field }} -- {{ field.category }} </button>
             </div>
             <script>
-                field_selected += "{{field}}" + ",";
+                field_selected += "numeric_" + "{{field}}" + ",";
             </script>
             {% endfor %}
     </div>
@@ -34,7 +37,7 @@
                 <button type="button" > {{ field }} -- {{ field.category }}</button>
             </div>
             <script>
-                field_selected += "{{field}}" + ",";
+                field_selected += "boolean_" +  "{{field}}" + ",";
             </script>
             {% endfor %}
         </ul>
