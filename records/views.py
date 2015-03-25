@@ -263,14 +263,16 @@ class ReportDetail(View):
         name = request.POST.get("name","")
         contact = request.POST.get("contact","")
         date = request.POST.get("date", "")
-
-        tz = get_current_timezone()
-        date = datetime.strptime(date, "%B %d, %Y, %I:%M %p")
-
+        
+        if 'p.m.' in str(date):
+            date = datetime.strptime(date, "%B %d, %Y, %I:%M p.m.")
+        if 'a.m.' in str(date):
+            date = datetime.strptime(date, "%B %d, %Y, %I:%M a.m.")
+        
         patient = Patient.objects.filter(name = name, contact = contact)[0]
-        visit = Visit.objects.filter(patient = patient, date=date)[0]
+        visit = Visit.objects.filter(patient = patient, date = date)
 
-        return HttpResponse(name + " " + contact + " " + date)
+        return HttpResponse(name + "<br/>" + contact + "<br/> " + str(date) + "<br/>" + str(len(visit)))
 
 
 
