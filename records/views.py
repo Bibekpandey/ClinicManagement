@@ -15,7 +15,7 @@ class Reception(View):
     def get(self, request):
         newPatientForm = NewPatientForm()
         docAndTestForm= DoctorAndTestForm()
-        return render(request, 'records/reception.html', {'newPatientForm':newPatientForm, 'docAndTestForm':docAndTestForm})
+        return render(request, 'records/reception1.html', {'newPatientForm':newPatientForm, 'docAndTestForm':docAndTestForm})
 
 
     def post(self, request):
@@ -88,7 +88,7 @@ class Reception(View):
                 return HttpResponse('not a post request')
         except Exception as e:
             error = e.args[0]
-            return render(request, 'records/reception.html', {'error':error, 'newPatientForm':newpatientform})
+            return render(request, 'records/reception1.html', {'error':error, 'newPatientForm':newpatientform})
         except ValueError:
             return HttpResponse('valueerrro')
 
@@ -111,7 +111,7 @@ class LabTest(View):
         fields_boolean = BooleanTestField.objects.filter(testType = testtype)
 
         context = {'testId':testId, 'testtype' : testtype.name, 'fields_numeric' : fields_numeric, 'fields_boolean' : fields_boolean}
-        return render(request,'records/labtest.html',  context)
+        return render(request,'records/labtest1.html',  context)
 
 # to process the lab form ( which results in report)
 def processLabForm(request):
@@ -164,7 +164,7 @@ class Lab(View):
         tests = Test.objects.filter(reportOut=False)
         context['tests'] = tests
 
-        return render(request, 'records/lab.html', context)
+        return render(request, 'records/lab1.html', context)
 
     def post(self, request):
         return HttpResponse('test')
@@ -253,26 +253,29 @@ class Report(View):
     def post(self, request):
         return HttpResponse("report")
 
-
+# for detail view of the report of the 'visit' specified by 'visitid'
 class ReportDetail(View):
 
     def get(self, request):
         return HttpResponse("no get method")
 
     def post(self, request):
+        context = {}
+        # get post data
         name = request.POST.get("name","")
         contact = request.POST.get("contact","")
-        date = request.POST.get("date", "")
-        
-        if 'p.m.' in str(date):
-            date = datetime.strptime(date, "%B %d, %Y, %I:%M p.m.")
-        if 'a.m.' in str(date):
-            date = datetime.strptime(date, "%B %d, %Y, %I:%M a.m.")
-        
+        visitid = request.POST.get("id", "")
+       
+        # get patient,visit, and test object
         patient = Patient.objects.filter(name = name, contact = contact)[0]
-        visit = Visit.objects.filter(patient = patient, date = date)
+        visit = get_object_or_404(Visit, pk = visitid)
+        tests = Test.objects.filter(visit = visit)
+        
+        context['patient'] = patient
+        context['visit'] = visit
+        context['tests'] = tests
 
-        return HttpResponse(name + "<br/>" + contact + "<br/> " + str(date) + "<br/>" + str(len(visit)))
+        return render(request, 'records/report_detail.html', context)
 
 
 

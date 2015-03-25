@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title> REPORT DETAIL </title>
+</head>
+
+<body>
+    <ul>
+        <li> <b> Name : </b>  {{ patient.name }} </li>
+        <li> <b> Age : </b>  {{ patient.age}} </li>
+        <li> <b> Sex : </b>  {{ patient.sex}} </li>
+        <li> <b> Contact : </b>  {{ patient.contact}} </li>
+        <li> <b> Address : </b>  {{ patient.address}} </li>
+        <li> <b> Referred By : </b> Dr.  {{ visit.referredBy.name}} ( {{ visit.referredBy.hospital }} ) </li>
+        <li> <b> Visit Time  : </b>  {{ visit.date }} </li>
+        <li> <b> Visit Number : </b>  {{ visit.patient.numberOfVisits }} </li>
+    </ul>
+    <hr />
+
+    {% for test in tests %}
+        <h2> {{ test.testType }} </h2>
+    {% endfor %}
+</body>
+
+</html>
+
