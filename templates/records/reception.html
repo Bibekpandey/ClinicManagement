@@ -24,7 +24,7 @@
 
 </head>
 
-<body>
+<body onload="load()">
 
     <div id="wrapper">
         <!-- Navigation -->
@@ -133,6 +133,7 @@
                 </div>
 
                 <form action="{% url 'reception'%}" method="post">
+                {% csrf_token %}
                 <div class="row">
                     <div class="col-lg-6 col-lg-offset-2">
                             <div class="panel panel-default">
@@ -169,12 +170,12 @@
 
                                 <div class="form-group">
                                     <label>{{newPatientForm.address.name|title}}</label>
-                                    <input class="form-control" placeholder="Address" name={{newPatientForm.address.name}}">
+                                    <input class="form-control" placeholder="Address" name="{{newPatientForm.address.name}}">
                                 </div>
 
                                 <div class="form-group">
                                     <label>Contact Number</label>
-                                    <input class="form-control" placeholder="Contact Number">
+                                    <input class="form-control" placeholder="Contact Number" name="{{newPatientForm.contact.name}}">
                                 </div>
                                 <div class="form-group">
                                     <label>{{newPatientForm.age.name|title}}</label>
@@ -219,12 +220,12 @@
                                     <h2 class="panel-title">Tests</h2>
                                 </div>
                                 <div class="panel-body">
-                                {% for x in docAndTestForm.fields %}
+                                {% for x in testtypes %}
                                     <div class="form-group">
-                                        <label>{{x.name}}</label>
                                         <div class="checkbox">
-                                                <input type="checkbox" name="{{x.name}}">{{x}}
+                                                <input type="checkbox" name="{{x.name}}"><label>{{x.name}}</label>
                                     </div>
+                                </div>
                                 {% endfor %}
                                 </div>
                                         
@@ -249,7 +250,25 @@
     <script src="{% static 'records/js/plugins/morris/raphael.min.js' %}"></script>
     <script src="{% static 'records/js/plugins/morris/morris.min.js' %}"></script>
     <script src="{% static 'records/js/plugins/morris/morris-data.js' %}"></script>
-
+<script>
+    function hide(id)
+    {
+        elements = document.getElementsByClassName('patient_data');
+        for(x in elements)
+        {
+            if(elements[x].id==id)
+                elements[x].style.display="none";
+            else
+                elements[x].style.display="block";
+        }
+    }
+    function load()
+    {
+        elements = document.getElementsByClassName('patient_data');
+        for(x in elements)
+            elements[x].style.display="none";
+    } 
+</script>
 </body>
 
 </html>

@@ -5,19 +5,23 @@ function selectionNumeric(id, maleRange, femaleRange, childRange)
 {
     //get our  node with id that is to be hidden after selection
     var x = document.getElementById(id);
-    x.style.visibility = "hidden";
+    x.style.display= "none";
 
     var form_id = "form_"+id;
 
     //create a new div
     var newdiv = document.createElement("div");
+    newdiv.setAttribute('class','div-lab');
     newdiv.setAttribute('id', form_id );
 
     //create label
     var label = document.createElement("LABEL");
+    label.setAttribute("class", "label-lab");
+    label.setAttribute('font-weight', 'bold');
     label.innerHTML = id;
 
     var input = document.createElement("input");
+    input.setAttribute('class', 'form-control input-lab');
     input.setAttribute('type','number');
     input.setAttribute('name', 'numeric_'+id );
     input.setAttribute('step', '0.01');
@@ -30,36 +34,41 @@ function selectionNumeric(id, maleRange, femaleRange, childRange)
     if(maleRange == femaleRange && femaleRange==childRange)
     {
         male = document.createElement("LABEL");
-        male.innerHTML = maleRange;
+        male.setAttribute('class','label-lab');
+        male.innerHTML = 'Normal'+'('+maleRange+')';
     }
 
     else if(maleRange != femaleRange && femaleRange == childRange)
     {
         male = document.createElement("LABEL");
-        male.innerHTML = maleRange;
+        male.setAttribute('class','label-lab');
+        male.innerHTML = 'Male'+'('+maleRange+')';
         female = document.createElement("LABEL");
-        female.innerHTML = femaleRange;
+        female.setAttribute('class','label-lab');
+        female.innerHTML = 'Female'+'('+femaleRange+')';
     }
 
     else
     {
         male = document.createElement("LABEL");
-        male.innerHTML = maleRange;
+        male.setAttribute('class','label-lab');
+        male.innerHTML = 'Male'+'('+maleRange+')';
         female = document.createElement("LABEL");
-        female.innerHTML = femaleRange;
+        female.setAttribute('class','label-lab');
+        female.innerHTML = 'Female'+'('+femaleRange+')';
         child = document.createElement("LABEL");
-        child.innerHTML = childRange;
+        child.setAttribute('class','label-lab');
+        child.innerHTML = 'Child'+'('+childRange+')';
     }
 
     //create button
-    var button = document.createElement("input");
-    button.type = "button";
-    button.value = "cancel";
+    var button = document.createElement("button");
+    button.setAttribute("class", "button-lab button-small");
+    button.innerHTML= "X";
     button.addEventListener("click", function () { cancelClick(form_id); } );
 
     //append
     newdiv.appendChild(label);
-    newdiv.appendChild(input);
     if(male)
     {
         newdiv.appendChild(male);
@@ -72,8 +81,9 @@ function selectionNumeric(id, maleRange, femaleRange, childRange)
     {
         newdiv.appendChild(child);
     }
-    newdiv.appendChild(button);
 
+    newdiv.appendChild(input);
+    newdiv.appendChild(button);
     /*
     var temp = document.getElementsByTagName("form")[0];
     temp.appendChild(newdiv);
@@ -91,19 +101,22 @@ function selectionBoolean(id, positive, negative)
     //alert(positive + " " + negative);
     //get our  node with id that is to be hidden after selection
     var x = document.getElementById(id);
-    x.style.visibility = "hidden";
+    x.style.display= "none";
 
     var form_id = "form_"+id;
 
     var newdiv = document.createElement("div");
+    newdiv.setAttribute('class','div-lab');
     newdiv.setAttribute('id', form_id);
 
     var label = document.createElement("LABEL");
+    label.setAttribute('class', 'label-lab');
     label.innerHTML = id+ " : ";
 
 
     //label for positive
     var label_positive = document.createElement("LABEL");
+    label_positive.setAttribute("class", "label-lab");
     label_positive.innerHTML = positive;
 
     // radio button for positive
@@ -114,6 +127,7 @@ function selectionBoolean(id, positive, negative)
 
     // label for negative
     var label_negative = document.createElement("LABEL");
+    label_negative.setAttribute("class", "label-lab");
     label_negative.innerHTML = negative;
 
     var radio_negative = document.createElement("input");
@@ -121,10 +135,10 @@ function selectionBoolean(id, positive, negative)
     radio_negative.setAttribute("name", 'boolean_'+id);
     radio_negative.setAttribute("value", 0);
 
-
-    var button = document.createElement("input");
-    button.type = "button";
-    button.value = "cancel";
+    var button = document.createElement("button");
+    button.setAttribute("class","button-lab button-small");
+    button.setAttribute('display', 'inline');
+    button.innerHTML="X";
     button.addEventListener("click", function () { cancelClick(form_id); } );
 
     // this is a div where radio button gets appended
@@ -135,8 +149,8 @@ function selectionBoolean(id, positive, negative)
     select.appendChild(radio_negative);
 
     newdiv.appendChild(label);
-    newdiv.appendChild(select);
     newdiv.appendChild(button);
+    newdiv.appendChild(select);
 
     var divappend = document.getElementById("selected");
     divappend.appendChild(newdiv);
@@ -149,7 +163,7 @@ function cancelClick(id)
     //remove 'form_' part from form id
     var duplicate = id.slice(5,id.length);
     var v = document.getElementById(duplicate);
-    v.style.visibility = "visible";
+    v.style.display= "block";
 
     var x = document.getElementById(id);
     x.remove();
