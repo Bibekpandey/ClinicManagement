@@ -8,7 +8,7 @@
     <title> REPORT DISPLAY </title>
 </head>
 
-<body>
+<body onload="load()">
     <h2> {{ name }} </h2>
     <h2> {{ contact }} </h2>
 
@@ -19,7 +19,20 @@
         <input id="hidden_date_id" type="hidden" name="date" value = "-1" />
         <input id="hidden_visit_id" type="hidden" name="id" value="-1" />
     {% for visit in visits %}
-    <a href="#" onclick="submitform('{{name}}', '{{ contact }}', '{{ visit.id }}');">{{ visit.date }}</a><br>
+    <div id="visit_{{forloop.counter}}">
+        <a href="#" onclick="toggletests({{forloop.counter}});">{{ visit.date }}</a><br>
+        <div class="tests" id="tests_{{forloop.counter}}">
+            <ul>
+                {% for tests in alltests %}
+                    {% if forloop.parentloop.counter == forloop.counter %}
+                        {% for test in tests %}
+                        <li><a href="{% url 'report_detail'%}?testid={{test.id}}"> {{test}} </a></li>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
     {% endfor %}
 
 
@@ -41,6 +54,23 @@ function submitform(name, contact, visitid)
     form.submit();
     // not adding alert() returns back here. Don't know what is going on here
 }
+
+function toggletests(id)
+{
+    var elem = document.getElementById("tests_"+id.toString());
+    var attr= elem.style.display;
+    if(attr=="none")
+        elem.style.display = "block";
+    else elem.style.display="none";
+}
+
+function load()
+{
+    var elems = document.getElementsByClassName("tests");
+    for (x in elems)
+        elems[x].style.display="none";
+}
+
 </script>
 
 </html>

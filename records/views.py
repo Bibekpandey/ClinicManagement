@@ -248,6 +248,14 @@ class Report(View):
         context['contact'] = patient_contact
 
         context['visits'] = visits
+
+        # now get list of all the tests of the visits
+        alltests = []
+        for visit in visits:
+            visittests = Test.objects.filter(visit=visit)
+            alltests.append(visittests)
+        context['alltests'] = alltests
+
         return render(request, 'records/report.html', context)
 
     def post(self, request):
@@ -257,7 +265,15 @@ class Report(View):
 class ReportDetail(View):
 
     def get(self, request):
-        return HttpResponse("no get method")
+        # here we get test id as get variable
+        try:
+            testid = int(request.GET.get("testid",""))
+            test = get_object_or_404(Test,pk=testid)
+
+            return HttpResponse(testid)
+            
+        except ValueError, Exception:
+            return HttpResponse("something went wrong with the request/request variables")
 
     def post(self, request):
         context = {}
@@ -276,17 +292,3 @@ class ReportDetail(View):
         context['tests'] = tests
 
         return render(request, 'records/report_detail.html', context)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
