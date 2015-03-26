@@ -26,6 +26,7 @@ class TestType(models.Model):
 # for the category of the tests like differential count, absolute count, etc
 
 class Category(models.Model):
+    testType = models.ForeignKey('TestType', null=True)
     name = models.CharField(max_length=50)
 
     def __str__(self):

@@ -19,8 +19,25 @@
     </ul>
     <hr />
 
-    {% for test in tests %}
-        <h2> {{ test.testType }} </h2>
+    {% for category in categories %}
+        <h2> {{ category}} </h2>
+        {% for each in numeric_categorized %}
+            {% if forloop.counter == forloop.parentloop.counter %}
+                {% for x in each %}
+                 {{ x.field.name }} , {{ x.value }} <br>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+        
+        {% for each in boolean_categorized %}
+            {% if forloop.counter == forloop.parentloop.counter %}
+                {% for x in each %}
+                 {{ x.field.name }} , {{ x.value }} <br>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+
+        <br>
     {% endfor %}
 </body>
 

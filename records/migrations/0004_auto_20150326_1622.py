@@ -8,32 +8,32 @@ import datetime
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('records', '0002_auto_20150307_0313'),
+        ('records', '0003_auto_20150326_1620'),
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='range',
-            name='endValue',
-            field=models.DecimalField(max_digits=12, decimal_places=5),
+        migrations.AddField(
+            model_name='category',
+            name='testType',
+            field=models.ForeignKey(null=True, to='records.TestType'),
             preserve_default=True,
         ),
         migrations.AlterField(
-            model_name='range',
-            name='startValue',
-            field=models.DecimalField(max_digits=12, decimal_places=5),
+            model_name='category',
+            name='name',
+            field=models.CharField(max_length=50),
             preserve_default=True,
         ),
         migrations.AlterField(
             model_name='test',
             name='reportDate',
-            field=models.DateTimeField(default=datetime.datetime(2015, 3, 7, 3, 17, 34, 652276)),
+            field=models.DateTimeField(default=datetime.datetime(2015, 3, 26, 16, 22, 33, 353550)),
             preserve_default=True,
         ),
         migrations.AlterField(
             model_name='visit',
             name='date',
-            field=models.DateTimeField(default=datetime.datetime(2015, 3, 7, 3, 17, 34, 651766)),
+            field=models.DateTimeField(default=datetime.datetime(2015, 3, 26, 16, 22, 33, 352662)),
             preserve_default=True,
         ),
     ]

@@ -280,23 +280,16 @@ class ReportDetail(View):
             categorized_boolean_values = []
             # categoriezed values in same list
             for category in categories:
-                filterednumeric = numeric_results.filter(field__category__name=category)
-                filteredboolean = boolean_results.filter(field__category__name=category)
+                filterednumeric = numeric_results.filter(field.category=category)
+                filteredboolean = boolean_results.filter(field.category=category)
                 categorized_numeric_values.append(filterednumeric)
                 categorized_boolean_values.append(filteredboolean)
 
-            noncategorized_numeric = numeric_results.filter(field__category=None)
-            noncategorized_boolean = boolean_results.filter(field__category=None)
-            context = {}
-            context['categories'] = categories
-            context['numeric_categorized'] = categorized_numeric_values
-            context['boolean_categorized'] = categorized_boolean_values
-            context['numeric_uncategorized'] = noncategorized_numeric
-            context['boolean_uncategorized'] = noncategorized_boolean
-            context['visit'] = test.visit
-            context['patient'] = test.visit.patient
+            noncategorized_numeric = numeric_results.filter(field.category=None)
+            noncategorized_boolean = numeric_results.filter(field.category=None)
 
-            return render(request, 'records/report_detail.html', context)
+
+            return HttpResponse(categories)
             
         except ValueError:
             return HttpResponse("something went wrong with the request/request variables")
