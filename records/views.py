@@ -342,3 +342,26 @@ class ReportDetail(View):
         context['tests'] = tests
 
         return render(request, 'records/report_detail.html', context)
+
+# logging out 
+class Logout(View):
+
+    def get(self, request):
+        #get login session
+        logintype = request.session.get('logintype', '')
+
+        # if already logged in 
+        if logintype : 
+            del request.session['logintype']
+            return HttpResponseRedirect(reverse('login_' + logintype))
+
+        # else just redirect to reception login page
+        else : 
+            return HttpResponseRedirect(reverse('login_reception'))
+
+    def post(self, request):
+        pass
+
+
+
+

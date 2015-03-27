@@ -12,7 +12,8 @@ urlpatterns = patterns('',
      url(r'^login/reception/', Login.as_view(logintype='reception'), name='login_reception'),
      url(r'^login/lab/', Login.as_view(logintype='lab'), name='login_lab'),
      url(r'report/', Report.as_view(), name='report'),
-     url(r'reportdetail/', ReportDetail.as_view(), name='report_detail')
+     url(r'reportdetail/', ReportDetail.as_view(), name='report_detail'),
+     url(r'logout/', Logout.as_view(), name = 'logout'),
     # url(r'^blog/', include('blog.urls')),
 
 )
