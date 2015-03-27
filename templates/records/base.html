@@ -68,7 +68,8 @@
                         <a href="index.html"><i class="fa fa-fw fa-cloud"></i> Dashboard</a>
                     </li>
                     <li class="active">
-                        <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-edit"></i> Reception <i class="fa fa-fw fa-caret-down"></i></a>
+                        {% block selectionbar %}
+                        {% endblock %}
                         <ul id="demo" class="collapse">
                             <li>
                                 <a href="reception.html"><i class="fa fa-fw fa-user"></i> New Patient</a>
