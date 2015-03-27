@@ -13,6 +13,11 @@ from datetime import datetime
 class Reception(View):
 
     def get(self, request):
+        logintype = request.session.get('logintype','')
+        if not logintype : 
+            return HttpResponseRedirect(reverse('login_reception'))
+        if logintype == 'lab' : 
+            return HttpResponseRedirect(reverse('lab'))
         newPatientForm = NewPatientForm()
         docAndTestForm= DoctorAndTestForm()
         return render(request, 'records/reception1.html', {'newPatientForm':newPatientForm, 'docAndTestForm':docAndTestForm})
@@ -97,8 +102,13 @@ class Reception(View):
 class LabTest(View):
 
     def get(self, request):
-            return HttpResponse('we dont need get')
-
+        logintype = request.session.get('logintype' ,'' )
+        if not logintype : 
+            return HttpResponseRedirect(reverse('login_lab'))
+        if logintype == "lab":
+            return HttpResponseRedirect(reverse('lab'))
+        if logintype == "reception" : 
+            return HttpResponseRedirect(reverse('reception'))
     # post request
     def post(self, request):
 
@@ -159,6 +169,12 @@ class Lab(View):
     
     def get(self, request):
         context = {}
+        logintype = request.session.get('logintype','')
+
+        if not logintype : 
+            return HttpResponseRedirect(reverse('login_lab'))
+        if logintype == 'reception' : 
+            return HttpResponseRedirect(reverse('login_reception'))
 
         # get all the tests which have not been carried out 
         tests = Test.objects.filter(reportOut=False)
@@ -173,16 +189,23 @@ class Lab(View):
 class Login(View):
     # for logintype
     logintype = None
+    error = ""
     
     #counstructor shit
     def __init__(self, logintype):
         self.logintype = logintype
+        self.error = ""
     
     # get methid
     def get(self, request):
         context = {}
         context['logintype'] = self.logintype
-        return render(request, 'records/login.html', context)
+        context['error'] = self.error
+        logintype = request.session.get('logintype','')
+        if logintype : 
+            return HttpResponseRedirect('/index/' + logintype)
+        else:
+            return render(request, 'records/login.html', context)
 
     # post method
     def post(self, request):
@@ -198,14 +221,14 @@ class Login(View):
         redirect = ''
         if(logintype == "lab"):
             redirect="lab"
-        else:
+        if(logintype == 'reception') : 
             redirect = "reception"
 
         user = None
         if username=='' or password=='':
             error = "username/password cannot be empty :D"
-            context['error'] = error
-            return render(request, 'records/login.html', context)
+            self.error = error
+            return HttpResponseRedirect(reverse("login_" + redirect))
         else:
             if logintype == "lab":
                 user = LabStaff.objects.filter(username = username, password = password)
@@ -215,8 +238,10 @@ class Login(View):
         if len(user) == 0:
             error = "invalid username/password"
             context['error'] = error
-            return render(request, 'records/login.html', context)
+            self.error = error
+            return HttpResponseRedirect('/index/login/' + logintype ) 
         else:
+            request.session['logintype'] = logintype
             return HttpResponseRedirect(reverse(redirect))
 
 # report view
@@ -224,6 +249,11 @@ class Report(View):
 
     def get(self, request):
         context = {}
+        logintype = request.session.get('logintype' , '')
+        if not logintype : 
+            return HttpResponseRedirect(reverse('login_lab'))
+        if logintype == 'reception' : 
+            return HttpResponseRedirect(reverse('reception'))
         try:
             #our query string for fetching patient information
             patientid = int(request.GET.get('patient',''))
@@ -254,6 +284,11 @@ class Report(View):
 class ReportDetail(View):
 
     def get(self, request):
+        logintype = request.session.get('logintype' , '')
+        if not logintype : 
+            return HttpResponseRedirect(reverse('login_lab'))
+        if logintype == 'reception' : 
+            return HttpResponseRedirect(reverse('reception'))
         # here we get test id as get variable
         try:
             testid = int(request.GET.get("testid",""))
