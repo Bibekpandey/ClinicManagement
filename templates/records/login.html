@@ -14,20 +14,29 @@
         <div class="row">
             <div class="col-md-4 col-md-offset-4">
                 <div class="login-panel panel panel-default">
-                    <div class="panel-heading">
+                    <div class="panel-heading" id="login_header" >
                         <h3 class="panel-heading">Please Sign In : <b> {{ logintype }} </b> </h3>
                     </div>
                     <div class="panel-body">
-                        <form role="form" method="post" action="{% url 'login_lab' %}" >
+                        <form role="form" method="post" action="{% url 'login' %}" >
                         {% csrf_token %}
                             <fieldset>
-                                <input id="hidden_test_id" type="hidden" name="logintype" value="{{ logintype }}" />
                                 <div class="form-group">
                                     <input class="form-control" placeholder="Username" name="username" type="username" autofocus>
                                 </div>
                                 <div class="form-group">
                                     <input class="form-control" placeholder="Password" name="password" type="password" value="">
                                 </div>
+
+                                <div class = "form-group">
+                                    <label> RECEPTION  </label>
+                                    <input type="radio" name="selection" value="reception" onclick="radioSelection('reception')" />
+                                </div>
+                                <div class = "form-group">
+                                    <label> LAB </label>
+                                    <input type="radio" name="selection" value="lab" onclick="radioSelection('lab')" />
+                                </div>
+
                                 <div class="checkbox">
                                     <label>
                                         <input name="remember" type="checkbox" value="Remember Me">Remember Me
@@ -54,5 +63,17 @@
     <script src="{% static 'records/plugins/morris/morris.min.js' %}"></script>
     <script src="{% static 'records/plugins/morris/morris-data.js' %}"></script>
 
+    <script>
+        function radioSelection(selected)
+        {
+            var login_header = document.getElementById("login_header");
+            var h3 = (login_header.getElementsByClassName("panel-heading"))[0];
+            h3.innerHTML = "Please Sign In : " + "<b>" + selected +"</b>";
+        }
+    </script>
+
 </body>
 </html>
+
+
+
