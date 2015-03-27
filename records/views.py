@@ -224,39 +224,28 @@ class Report(View):
 
     def get(self, request):
         context = {}
+        try:
+            #our query string for fetching patient information
+            patientid = int(request.GET.get('patient',''))
 
-        #our query string for fetching patient information
-        querystring = request.GET.get('patient','')
+            patient = get_object_or_404(Patient, pk=patientid)
+            visits = Visit.objects.filter(patient = patient).order_by('-date')
 
-        # if multiple parameter -> separated by ,
-        splitted = querystring.split(',')
-        if len(splitted) == 1 or len(splitted)>2:
-            return HttpResponse("expected only two query parameters separated by ',' ")
+            context['name'] = patient.name
+            context['contact'] = patient.contact
 
-        patient_name = splitted[0].strip()
-        patient_contact = ''
-        patient_contact = splitted[1].strip()
-        
-        patients = Patient.objects.filter(name = patient_name, contact = patient_contact)
-        if len(patients) == 0:
-            return HttpResponse("no such patient LOL")
-        
-        patient = patients[0]
-        visits = Visit.objects.filter(patient = patient).order_by('-date')
+            context['visits'] = visits
 
-        context['name'] = patient_name
-        context['contact'] = patient_contact
+            # now get list of all the tests of the visits
+            alltests = []
+            for visit in visits:
+                visittests = Test.objects.filter(visit=visit)
+                alltests.append(visittests)
+            context['alltests'] = alltests
 
-        context['visits'] = visits
-
-        # now get list of all the tests of the visits
-        alltests = []
-        for visit in visits:
-            visittests = Test.objects.filter(visit=visit)
-            alltests.append(visittests)
-        context['alltests'] = alltests
-
-        return render(request, 'records/report.html', context)
+            return render(request, 'records/report.html', context)
+        except ValueError:
+            raise Http404
 
     def post(self, request):
         return HttpResponse("report")

@@ -4,6 +4,12 @@
 
 <head>
     <title> REPORT DETAIL </title>
+    <style>
+    table {
+        border:1px solid black;
+        text-align:center;
+    }
+    </style>
 </head>
 
 <body>
@@ -19,26 +25,86 @@
     </ul>
     <hr />
 
-    {% for category in categories %}
-        <h2> {{ category}} </h2>
-        {% for each in numeric_categorized %}
-            {% if forloop.counter == forloop.parentloop.counter %}
-                {% for x in each %}
-                 {{ x.field.name }} , {{ x.value }} <br>
-                {% endfor %}
-            {% endif %}
+<table> 
+    {# first the uncategorized #}
+    <tr> <td>&nbsp;</td></tr>
+    {% for each in numeric_uncategorized %}
+                {% if forloop.counter == forloop.parentloop.counter %}
+                    {% for x in each %}
+                    <tr>
+                     <td>{{ x.field.name }}</td> <td>{{ x.value }}</td> 
+                     {# for range #}
+                     <td>
+                     {% if x.field.maleRange == x.field.femaleRange and x.field.maleRange == x.field.childRange %}
+                        {{x.field.maleRange}}
+                     {% elif x.field.maleRange != x.field.femaleRange and x.field.femaleRange == x.field.childRange %}
+                        male: {{ x.field.maleRange }}
+                        female: {{ x.field.femaleRange }}
+                     {% elif x.field.maleRange == x.field.femaleRange and x.field.maleRange != x.field.childRange %}
+                        adult: {{ x.field.maleRange }}
+                        child: {{ x.field.childRange }}
+                     {% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+    
+    {# boolean uncategorized #}
+    {% for each in boolean_uncategorized %}
+                {% if forloop.counter == forloop.parentloop.counter %}
+                    {% for x in each %}
+                    <tr>
+                     <td>{{ x.field.name }}</td> {# positive and negative values #}
+                        <td>
+                        {% if x.value == 0 %} 
+                            {{ x.field.negative}} 
+                        {% else %} 
+                            {{ x.field.positive }} 
+                        {% endif %} </td>
+                    </tr>
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+    {# now the categorized ones #}
+        {% for category in categories %}
+        <tr><td><h3> {{ category}} </h3></td></tr>
+            {% for each in numeric_categorized %}
+                {% if forloop.counter == forloop.parentloop.counter %}
+                    {% for x in each %}
+                     <tr><td>{{ x.field.name }}</td><td>{{ x.value }}</td> 
+                     {# for range #}
+                     <td>
+                     {% if x.field.maleRange == x.field.femaleRange and x.field.maleRange == x.field.childRange %}
+                        {{x.field.maleRange}}
+                     {% elif x.field.maleRange != x.field.femaleRange and x.field.femaleRange == x.field.childRange %}
+                        male: {{ x.field.maleRange }}<br>
+                        female: {{ x.field.femaleRange }}
+                     {% elif x.field.maleRange == x.field.femaleRange and x.field.maleRange != x.field.childRange %}
+                        adult: {{ x.field.maleRange }}<br>
+                        child: {{ x.field.childRange }}
+                     {% endif %}</td>
+                     </tr>
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+            
+            {% for each in boolean_categorized %}
+                {% if forloop.counter == forloop.parentloop.counter %}
+                    {% for x in each %}
+                    <tr>
+                     <td>{{ x.field.name }}</td> {# positive and negative values #}
+                        <td>
+                        {% if x.value == 0 %} 
+                            {{ x.field.negative}} 
+                        {% else %} 
+                            {{ x.field.positive }} 
+                        {% endif %} </td>
+                    </tr>
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
         {% endfor %}
-        
-        {% for each in boolean_categorized %}
-            {% if forloop.counter == forloop.parentloop.counter %}
-                {% for x in each %}
-                 {{ x.field.name }} , {{ x.value }} <br>
-                {% endfor %}
-            {% endif %}
-        {% endfor %}
-
-        <br>
-    {% endfor %}
+    </table>
 </body>
 
 </html>
