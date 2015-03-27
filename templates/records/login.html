@@ -2,24 +2,78 @@
 
 <head>
     <title> LOGIN </title>
+    {% load staticfiles %}
+
+    <!-- Bootstrap Core CSS -->
+    <link href="{% static 'records/css/bootstrap.css' %}" type="text/css" rel="stylesheet">
+
 </head>
 
 <body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+                <div class="login-panel panel panel-default">
+                    <div class="panel-heading" id="login_header" >
+                        <h3 class="panel-heading">Please Sign In : <b> {{ logintype }} </b> </h3>
+                    </div>
+                    <div class="panel-body">
+                        <form role="form" method="post" action="{% url 'login' %}" >
+                        {% csrf_token %}
+                            <fieldset>
+                                <div class="form-group">
+                                    <input class="form-control" placeholder="Username" name="username" type="username" autofocus>
+                                </div>
+                                <div class="form-group">
+                                    <input class="form-control" placeholder="Password" name="password" type="password" value="">
+                                </div>
+
+                                <div class = "form-group">
+                                    <input type="radio" name="selection" value="reception" onclick="radioSelection('reception')" />
+                                    <label> RECEPTION  </label>
+                                </div>
+                                <div class = "form-group">
+                                    <input type="radio" name="selection" value="lab" onclick="radioSelection('lab')" />
+                                    <label> LAB </label>
+                                </div>
+
+                                <div class="checkbox">
+                                    <label>
+                                        <input name="remember" type="checkbox" value="Remember Me">Remember Me
+                                    </label>
+                                </div>
+                                <!-- Change this to a button or input when using this as a form -->
+                                <button type="submit" class="btn btn-success">login</button>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="{% static 'records/js/jquery.js ' %}"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{% static 'records/js/bootstrap.min.js ' %}"></script>
+
+    <!-- Morris Charts JavaScript -->
+    <script src="{% static  'records/js/plugins/morris/raphael.min.js'  %}"></script>
+    <script src="{% static 'records/plugins/morris/morris.min.js' %}"></script>
+    <script src="{% static 'records/plugins/morris/morris-data.js' %}"></script>
+
     <script>
-        
+        function radioSelection(selected)
+        {
+            var login_header = document.getElementById("login_header");
+            var h3 = (login_header.getElementsByClassName("panel-heading"))[0];
+            h3.innerHTML = "Please Sign In : " + "<b>" + selected +"</b>";
+        }
     </script>
-    <h2>{{ logintype }} </h2>
-    <h2> {{ error }} </h2>
-    <form id="login" action="{% url 'login_lab' %}"  method="post">
-        {% csrf_token %}
-        <input id="hidden_test_id" type="hidden" name="logintype" value="{{ logintype }}" />
-        <label> USERNAME </label>
-        <input type='text' name='username' placeholder='username' />
-        <br />
-        <label> PASSWORD </label>
-        <input type='password' name='password'placeholder='password' />
-        <br />
-        <input type='submit' value='submit' />
-    </form>
+
 </body>
 </html>
+
+
+

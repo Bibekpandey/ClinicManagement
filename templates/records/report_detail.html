@@ -1,108 +1,105 @@
-<!DOCTYPE html>
+{% extends "records/base.html" %}
 
-<html>
 
-<head>
-    <title> REPORT DETAIL </title>
-    <style>
-    table {
-        border:1px solid black;
-        text-align:center;
-    }
-    </style>
-</head>
+{% block content %}
 
-<body>
-    <ul>
-        <li> <b> Name : </b>  {{ patient.name }} </li>
-        <li> <b> Age : </b>  {{ patient.age}} </li>
-        <li> <b> Sex : </b>  {{ patient.sex}} </li>
-        <li> <b> Contact : </b>  {{ patient.contact}} </li>
-        <li> <b> Address : </b>  {{ patient.address}} </li>
-        <li> <b> Referred By : </b> Dr.  {{ visit.referredBy.name}} ( {{ visit.referredBy.hospital }} ) </li>
-        <li> <b> Visit Time  : </b>  {{ visit.date }} </li>
-        <li> <b> Visit Number : </b>  {{ visit.patient.numberOfVisits }} </li>
-    </ul>
-    <hr />
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">Report Details
+                    <small>{{ testtype }} </small>
+                </h1>
+                <ul class="list-group">
+                    <li class="list-group-item"> <b> Name : </b>  {{ patient.name }} </li>
+                    <li class="list-group-item"> <b> Age : </b>  {{ patient.age}} </li>
+                    <li class="list-group-item"> <b> Sex : </b>  {{ patient.sex}} </li>
+                    <li class="list-group-item"> <b> Contact : </b>  {{ patient.contact}} </li>
+                    <li class="list-group-item"> <b> Address : </b>  {{ patient.address}} </li>
+                    <li class="list-group-item"> <b> Referred By : </b> Dr.  {{ visit.referredBy.name}} ( {{ visit.referredBy.hospital }} ) </li>
+                    <li class="list-group-item"> <b> Visit Time  : </b>  {{ visit.date }} </li>
+                    <li class="list-group-item"> <b> Visit Number : </b>  {{ visit.patient.numberOfVisits }} </li>
+                </ul>
+                <hr />
 
-<table> 
-    {# first the uncategorized #}
-    <tr> <td>&nbsp;</td></tr>
-    {% for each in numeric_uncategorized %}
-                {% if forloop.counter == forloop.parentloop.counter %}
-                    {% for x in each %}
-                    <tr>
-                     <td>{{ x.field.name }}</td> <td>{{ x.value }}</td> 
-                     {# for range #}
-                     <td>
-                     {% if x.field.maleRange  and not x.field.maleRange and not x.field.childRange %}
-                        {{x.field.maleRange}}
-                     {% elif x.field.maleRange and  x.field.femaleRange and not x.field.childRange %}
-                        male: {{ x.field.maleRange }}
-                        female: {{ x.field.femaleRange }}
-                     {% elif x.field.maleRange and  x.field.femaleRange and x.field.childRange %}
-                        adult: {{ x.field.maleRange }}
-                        child: {{ x.field.childRange }}
-                     {% endif %}</td>
-                    </tr>
+            <table class="table table-striped table-bordered"> 
+            <tr><th>SUB-TEST</th><th>VALUE</th><th>NORMAL RANGE</th>
+                {# first the uncategorized #}
+                {% for each in numeric_uncategorized %}
+                                <tr>
+                                 <td>{{ each.field.name }}</td> <td>{{ each.value }}</td> 
+                                 {# for range #}
+                                 <td>
+                                 {% if each.field.maleRange  and not each.field.femaleRange and not each.field.childRange %}
+                                    {{each.field.maleRange}}
+                                 {% elif each.field.maleRange and  each.field.femaleRange and not each.field.childRange %}
+                                    male: {{ each.field.maleRange }}
+                                    female: {{ each.field.femaleRange }}
+                                 {% elif each.field.maleRange and  each.field.femaleRange and x.field.childRange %}
+                                    adult: {{ each.field.maleRange }}
+                                    child: {{ each.field.childRange }}
+                                 {% endif %}</td>
+                                </tr>
+                        {% endfor %}
+                
+                {# boolean uncategorized #}
+                {% for each in boolean_uncategorized %}
+                                <tr>
+                                 <td>{{ each.field.name }}</td> {# positive and negative values #}
+                                    <td>
+                                    {% if each.value == 0 %} 
+                                        {{ each.field.negative}} 
+                                    {% else %} 
+                                        {{ each.field.positive }} 
+                                    {% endif %} </td>
+                                </tr>
+                        {% endfor %}
+                {# now the categorized ones #}
+                    {% for category in categories %}
+                    <tr><th>{{ category}}</th><td>&nbsp;</td><td>&nbsp;</td></tr>
+                        {% for each in numeric_categorized %}
+                            {% if forloop.counter == forloop.parentloop.counter %}
+                                {% for x in each %}
+                                 <tr><td>{{ x.field.name }}</td><td>{{ x.value }}</td> 
+                                 {# for range #}
+                                 <td>
+                                 {% if x.field.maleRange  and  not x.field.femaleRange and not x.field.childRange %}
+                                    {{x.field.maleRange}}
+                                 {% elif x.field.maleRange and  x.field.femaleRange and not x.field.childRange %}
+                                    male: {{ x.field.maleRange }}
+                                    female: {{ x.field.femaleRange }}
+                                 {% elif x.field.maleRange and  x.field.femaleRange and x.field.childRange %}
+                                    adult: {{ x.field.maleRange }}
+                                    child: {{ x.field.childRange }}
+                                 {% endif %}</td>
+                                 </tr>
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% for each in boolean_categorized %}
+                            {% if forloop.counter == forloop.parentloop.counter %}
+                                {% for x in each %}
+                                <tr>
+                                 <td>{{ x.field.name }}</td> {# positive and negative values #}
+                                    <td>
+                                    {% if x.value == 0 %} 
+                                        {{ x.field.negative}} 
+                                    {% else %} 
+                                        {{ x.field.positive }} 
+                                    {% endif %} </td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
                     {% endfor %}
-                {% endif %}
-            {% endfor %}
-    
-    {# boolean uncategorized #}
-    {% for each in boolean_uncategorized %}
-                    <tr>
-                     <td>{{ each.field.name }}</td> {# positive and negative values #}
-                        <td>
-                        {% if each.value == 0 %} 
-                            {{ each.field.negative}} 
-                        {% else %} 
-                            {{ each.field.positive }} 
-                        {% endif %} </td>
-                    </tr>
-            {% endfor %}
-    {# now the categorized ones #}
-        {% for category in categories %}
-        <tr><td><h3> {{ category}} </h3></td></tr>
-            {% for each in numeric_categorized %}
-                {% if forloop.counter == forloop.parentloop.counter %}
-                    {% for x in each %}
-                     <tr><td>{{ x.field.name }}</td><td>{{ x.value }}</td> 
-                     {# for range #}
-                     <td>
-                     {% if x.field.maleRange  and  not x.field.femaleRange and not x.field.childRange %}
-                        {{x.field.maleRange}}
-                     {% elif x.field.maleRange and  x.field.femaleRange and not x.field.childRange %}
-                        male: {{ x.field.maleRange }}
-                        female: {{ x.field.femaleRange }}
-                     {% elif x.field.maleRange and  x.field.femaleRange and x.field.childRange %}
-                        adult: {{ x.field.maleRange }}
-                        child: {{ x.field.childRange }}
-                     {% endif %}</td>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
 
-                     </tr>
-                    {% endfor %}
-                {% endif %}
-            {% endfor %}
-            
-            {% for each in boolean_categorized %}
-                {% if forloop.counter == forloop.parentloop.counter %}
-                    {% for x in each %}
-                    <tr>
-                     <td>{{ x.field.name }}</td> {# positive and negative values #}
-                        <td>
-                        {% if x.value == 0 %} 
-                            {{ x.field.negative}} 
-                        {% else %} 
-                            {{ x.field.positive }} 
-                        {% endif %} </td>
-                    </tr>
-                    {% endfor %}
-                {% endif %}
-            {% endfor %}
-        {% endfor %}
-    </table>
-</body>
-
-</html>
-
+{% block js %}
+{% endblock %}  

@@ -15,7 +15,7 @@ class Reception(View):
     def get(self, request):
         logintype = request.session.get('logintype','')
         if not logintype : 
-            return HttpResponseRedirect(reverse('login_reception'))
+            return HttpResponseRedirect(reverse('login'))
         if logintype == 'lab' : 
             return HttpResponseRedirect(reverse('lab'))
         newPatientForm = NewPatientForm()
@@ -62,7 +62,7 @@ class Reception(View):
                         raise Exception('invalid id')
                     patients = Patient.objects.filter(pk=patientId)
                     if len(patients)==0:
-                        raise Exception('id doesnot exist')
+                        raise Exception('id doesnot exist!!!')
                     patient = patients[0]
 
                 # now get doctor and test data
@@ -106,22 +106,19 @@ class Reception(View):
                 return HttpResponse('not a post request')
         except Exception as e:
             error = e.args[0]
-            return render(request, 'records/reception1.html', {'error':error, 'newPatientForm':newpatientform})
+            return render(request, 'records/reception.html', {'error':error, 'newPatientForm':newpatientform, 'docAndTestForm':docAndTestForm})
         except ValueError:
             return HttpResponse('valueerrro')
-
-
 
 class LabTest(View):
 
     def get(self, request):
         logintype = request.session.get('logintype' ,'' )
         if not logintype : 
-            return HttpResponseRedirect(reverse('login_lab'))
-        if logintype == "lab":
-            return HttpResponseRedirect(reverse('lab'))
-        if logintype == "reception" : 
-            return HttpResponseRedirect(reverse('reception'))
+            return HttpResponseRedirect(reverse('login'))
+        else:
+            return HttpResponseRedirect(reverse(logintype))
+
     # post request
     def post(self, request):
 
@@ -185,15 +182,12 @@ class Lab(View):
         context = {}
         logintype = request.session.get('logintype','')
 
-        if not logintype : 
-            return HttpResponseRedirect(reverse('login_lab'))
-        if logintype == 'reception' : 
-            return HttpResponseRedirect(reverse('login_reception'))
+        if not logintype or logintype=='reception' : 
+            return HttpResponseRedirect(reverse('login'))
 
         # get all the tests which have not been carried out 
         tests = Test.objects.filter(reportOut=False)
         context['tests'] = tests
-
         return render(request, 'records/lab.html', context)
 
     def post(self, request):
@@ -202,19 +196,12 @@ class Lab(View):
 # our generalized login system -> works for both @reception and @lab
 class Login(View):
     # for logintype
-    logintype = None
-    error = ""
-    
-    #counstructor shit
-    def __init__(self, logintype):
-        self.logintype = logintype
-        self.error = ""
     
     # get methid
     def get(self, request):
         context = {}
-        context['logintype'] = self.logintype
-        context['error'] = self.error
+        context['logintype'] = ''
+        context['error'] = ''
         logintype = request.session.get('logintype','')
         if logintype : 
             return HttpResponseRedirect('/index/' + logintype)
@@ -228,21 +215,16 @@ class Login(View):
 
         username = request.POST.get('username', '')
         password = request.POST.get('password', '')
-        logintype = request.POST.get('logintype', '')
+        logintype = request.POST.get('selection', '')
         context['logintype'] = logintype
 
-        # for redirecting things
-        redirect = ''
-        if(logintype == "lab"):
-            redirect="lab"
-        if(logintype == 'reception') : 
-            redirect = "reception"
+        if not logintype : 
+            return HttpResponseRedirect(reverse('login'))
 
         user = None
         if username=='' or password=='':
             error = "username/password cannot be empty :D"
-            self.error = error
-            return HttpResponseRedirect(reverse("login_" + redirect))
+            return HttpResponseRedirect(reverse("login"))
         else:
             if logintype == "lab":
                 user = LabStaff.objects.filter(username = username, password = password)
@@ -252,11 +234,10 @@ class Login(View):
         if len(user) == 0:
             error = "invalid username/password"
             context['error'] = error
-            self.error = error
-            return HttpResponseRedirect('/index/login/' + logintype ) 
+            return HttpResponseRedirect(reverse('login'))
         else:
             request.session['logintype'] = logintype
-            return HttpResponseRedirect(reverse(redirect))
+            return HttpResponseRedirect(reverse(logintype))
 
 # report view
 class Report(View):
@@ -265,7 +246,7 @@ class Report(View):
         context = {}
         logintype = request.session.get('logintype' , '')
         if not logintype : 
-            return HttpResponseRedirect(reverse('login_lab'))
+            return HttpResponseRedirect(reverse('login'))
         if logintype == 'reception' : 
             return HttpResponseRedirect(reverse('reception'))
         try:
@@ -300,7 +281,7 @@ class ReportDetail(View):
     def get(self, request):
         logintype = request.session.get('logintype' , '')
         if not logintype : 
-            return HttpResponseRedirect(reverse('login_lab'))
+            return HttpResponseRedirect(reverse('login'))
         if logintype == 'reception' : 
             return HttpResponseRedirect(reverse('reception'))
         # here we get test id as get variable
@@ -333,6 +314,7 @@ class ReportDetail(View):
             context['boolean_uncategorized'] = noncategorized_boolean
             context['visit'] = test.visit
             context['patient'] = test.visit.patient
+            context['testtype'] = test.testType
 
             return render(request, 'records/report_detail.html', context)
             
@@ -356,3 +338,18 @@ class ReportDetail(View):
         context['tests'] = tests
 
         return render(request, 'records/report_detail.html', context)
+
+# logging out 
+class Logout(View):
+
+    def get(self, request):
+        #get login session
+        del request.session['logintype']
+        return HttpResponseRedirect(reverse('login'))
+
+    def post(self, request):
+        pass
+
+
+
+
