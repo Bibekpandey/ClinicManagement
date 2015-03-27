@@ -8,27 +8,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
+    {% load staticfiles %}
 
     <title>Clinic Management system</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="{% static 'records/css/bootstrap.min.css'%}" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="css/sb-admin.css" rel="stylesheet">
+    <link href="{% static 'records/css/sb-admin.css'%}" rel="stylesheet">
 
     <!-- Morris Charts CSS -->
-    <link href="css/plugins/morris.css" rel="stylesheet">
+    <link href="{% static 'records/css/plugins/morris.css'%}" rel="stylesheet">
+    <script>
+        var field_selected = "";
+    </script>
 
-    <!-- Custom Fonts -->
-    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+    <style>
+        .button-lab
+        {
+            margin:3px;
+            width: 100%;
+            height:30px;
+            background:steelblue;
+            border:0px solid;
+            border-radius:0px;
+        }
+        .button-lab:hover
+        {
+            background:skyblue;
+        }
+        .button-small
+        {
+            width:20px;
+            background:#933;
+        }
+        .button-small:hover{background:skyblue;}
+        .button-green
+        {
+            background:lightgreen;
+            width:80px;
+        }
+        .label-lab
+        {
+            /*background:skyblue;*/
+            margin:3px;
+            margin-right:8px;
+            text-align:center;
+            display:inline;
+        }
+        .div-lab
+        {
+            background:steelblue;
+            padding:4px;
+            margin:5px;
+        }
+        .input-lab
+        {
+            width:60%;
+            display:inline;
+        }
+    </style>
 
 </head>
 
@@ -113,16 +153,15 @@
             <!-- /.navbar-collapse -->
         </nav>
 
+
         <div id="page-wrapper">
-
             <div class="container-fluid">
-
                 <!-- Page Heading -->
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
                             Lab Test
-                            <small>Name Name</small>
+                            <small>{{testtype}}</small>
                         </h1>
                         <ol class="breadcrumb">
                             <li>
@@ -138,22 +177,63 @@
                     </div>
                 </div>
                 <!-- /.row -->
-
+    <div class="row">
+        <div class="col-md-5">
+            <h2>Numeric fields</h2>
+            <div id="numeric">
+                    {% for field in fields_numeric %}
+                    <div id = "{{ field }}" onClick="selectionNumeric(this.id, '{{field.maleRange}}', '{{field.femaleRange}}', '{{field.childRange}}')">
+                        <button type="button" class="button-lab"> {{ field }} -- {{ field.category }} </button>
+                    </div>
+                    <script>
+                        field_selected += "numeric_" + "{{field}}" + ",";
+                    </script>
+                    {% endfor %}
             </div>
+       
+            <h2>Boolean fields</h2>
+            <div id="boolean">
+                    {% for field in fields_boolean %}
+                    <div id = "{{ field }}" onClick="selectionBoolean(this.id, '{{field.positive}}', '{{field.negative}}')">
+                        <button class="button-lab" type="button" > {{ field }} -- {{ field.category }}</button>
+                    </div>
+                    <script>
+                        field_selected += "boolean_" +  "{{field}}" + ",";
+                    </script>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div> {# col5 end #}
+        
+        <div class="col-md-7">
+            <h2>Selected fields </h2>
+            <form name="testform" action = "{% url 'process_lab_form' %}" method="post" onsubmit="return validate(field_selected)">
+            {% csrf_token %}
+                <input type="hidden" name="testtype" value="{{testtype}}"/>
+                <input type="hidden" name="testid" value="{{testId}}"/>
+                <div id="selected">
+                </div>
+                <input type="submit" value="submit" class="button-lab button-green" />
+            </form>
+        </div> {# col7 end #}
+    </div>
+    
+     </div>
             <!-- /.container-fluid -->
 
-        </div>
+     </div>
         <!-- /#page-wrapper -->
 
     </div>
     <!-- /#wrapper -->
 
     <!-- jQuery -->
-    <script src="js/jquery.js"></script>
+    <script src="{% static 'records/js/jquery.js'%}"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="js/bootstrap.min.js"></script>
+    <script src="{% static 'records/js/bootstrap.min.js'%}"></script>
 
-</body>
+    <script src="{% static 'records/js/labtest.js' %}"></script>
+    </body>
 
 </html>

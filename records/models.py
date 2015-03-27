@@ -56,9 +56,9 @@ class BooleanTestField(TestField):
 # field for tests having numerical results like RBC count
 
 class NumericTestField(TestField):
-    maleRange   = models.ForeignKey('Range', related_name="male_range")
-    femaleRange = models.ForeignKey('Range', related_name="female_range", null=True)
-    childRange  = models.ForeignKey('Range', related_name="child_range", blank=True)
+    maleRange   = models.ForeignKey('Range', related_name="male_range", null=True, blank=True)
+    femaleRange = models.ForeignKey('Range', related_name="female_range", null=True, blank=True)
+    childRange  = models.ForeignKey('Range', related_name="child_range", null=True, blank=True)
 
 
 # for storing result

@@ -8,26 +8,20 @@ import datetime
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('records', '0002_auto_20150326_1616'),
+        ('records', '0004_auto_20150327_0511'),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='category',
-            name='name',
-            field=models.CharField(max_length=50, blank=True),
-            preserve_default=True,
-        ),
-        migrations.AlterField(
             model_name='test',
             name='reportDate',
-            field=models.DateTimeField(default=datetime.datetime(2015, 3, 26, 16, 20, 19, 909405)),
+            field=models.DateTimeField(default=datetime.datetime(2015, 3, 27, 5, 11, 46, 669244)),
             preserve_default=True,
         ),
         migrations.AlterField(
             model_name='visit',
             name='date',
-            field=models.DateTimeField(default=datetime.datetime(2015, 3, 26, 16, 20, 19, 908472)),
+            field=models.DateTimeField(default=datetime.datetime(2015, 3, 27, 5, 11, 46, 668683)),
             preserve_default=True,
         ),
     ]
