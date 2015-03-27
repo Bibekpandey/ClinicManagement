@@ -102,7 +102,7 @@ class Reception(View):
                 return HttpResponse('not a post request')
         except Exception as e:
             error = e.args[0]
-            return render(request, 'records/reception1.html', {'error':error, 'newPatientForm':newpatientform})
+            return render(request, 'records/reception.html', {'error':error, 'newPatientForm':newpatientform})
         except ValueError:
             return HttpResponse('valueerrro')
 
