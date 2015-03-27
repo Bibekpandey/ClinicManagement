@@ -124,6 +124,10 @@
                         </ol>
                     </div>
                 </div><!--end breadcrumb-->
+    <form method="post" action="{% url 'labtest' %}">
+        {% csrf_token %}
+        <input id="hidden_test_id" type="hidden" name="testId" value="-1" />
+        <input id="hidden_testType_id" type="hidden" name="testTypeId" value="-1" />
 
             <div class="row">
                 <div class="col-lg-12">
@@ -135,119 +139,29 @@
                         <div class="panel-body">
                             <div class="dataTable_wrapper">
                                 <div class="dataTables_wrapper form-inline dt-bootstrap no-footer" id="dataTables-example_wrapper">
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <div id="dataTables-example_length" class="dataTables_length">
-                                                <label>
-                                                    Show
-                                                    <select class="form-control input-sm" aria-controls="dataTables-example" name="dataTables-example_length">
-                                                        <option value="10">10</option>
-                                                        <option value="25">25</option>
-                                                        <option value="50">50</option>
-                                                        <option value="100">100</option>
-                                                    </select>
-                                                     entries
-                                                 </label>
-                                             </div>
-                                         </div>
-                                         <div class="col-sm-6">
-                                            <div class="dataTables_filter" id="dataTables-example_filter">
-                                                <label>
-                                                    Search:
-                                                    <input aria-controls="dataTables-example" placeholder="" class="form-control input-sm" type="search">
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <table class="table table-bordered table-hover table-striped">
                                                 <thead>
                                                     <tr>
                                                         <th>Patient Name</th>
-                                                        <th>Visits</th>
-                                                        <th>Tests</th>
-                                                        <th>Some Thing</th>
+                                                        <th>Test</th>
+                                                        <th>Date</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+                                                {% for x in tests %}
                                                     <tr>
-                                                        <td><a href="labtest.html">Manoj Chapagain</a></td>
-                                                        <td>1265</td>
-                                                        <td>32.3%</td>
-                                                        <td>$321.33</td>
+                                                        <td><a href="#" onclick="submitform('{{x.id}}', '{{x.testType.id}}');">{{x.visit.patient.name}}</a></td>
+                                                        <td>{{x.testType}}</td>
+                                                        <td>{{x.visit.date}}</td>
                                                     </tr>
-                                                    <tr>
-                                                        <td>/about.html</td>
-                                                        <td>261</td>
-                                                        <td>33.3%</td>
-                                                        <td>$234.12</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>/sales.html</td>
-                                                        <td>665</td>
-                                                        <td>21.3%</td>
-                                                        <td>$16.34</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>/blog.html</td>
-                                                        <td>9516</td>
-                                                        <td>89.3%</td>
-                                                        <td>$1644.43</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>/404.html</td>
-                                                        <td>23</td>
-                                                        <td>34.3%</td>
-                                                        <td>$23.52</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>/services.html</td>
-                                                        <td>421</td>
-                                                        <td>60.3%</td>
-                                                        <td>$724.32</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>/blog/post.html</td>
-                                                        <td>1233</td>
-                                                        <td>93.2%</td>
-                                                        <td>$126.34</td>
-                                                    </tr>
+                                                {% endfor %}
                                                 </tbody>
                                             </table>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <div aria-live="polite" role="status" id="dataTables-example_info" class="dataTables_info">Showing 1 to 10 of 57 entries
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <div id="dataTables-example_paginate" class="dataTables_paginate paging_simple_numbers">
-                                                    <ul class="pagination">
-                                                        <li id="dataTables-example_previous" tabindex="0" aria-controls="dataTables-example" class="paginate_button previous disabled">
-                                                            <a href="#">Previous</a>
-                                                            </li>
-                                                            <li tabindex="0" aria-controls="dataTables-example" class="paginate_button active"><a href="#">1</a>
-                                                            </li>
-                                                            <li tabindex="0" aria-controls="dataTables-example" class="paginate_button "><a href="#">2</a>
-                                                            </li>
-                                                            <li tabindex="0" aria-controls="dataTables-example" class="paginate_button "><a href="#">3</a>
-                                                            </li>
-                                                            <li tabindex="0" aria-controls="dataTables-example" class="paginate_button "><a href="#">4</a>
-                                                            </li>
-                                                            <li tabindex="0" aria-controls="dataTables-example" class="paginate_button "><a href="#">5</a>
-                                                            </li>
-                                                            <li tabindex="0" aria-controls="dataTables-example" class="paginate_button "><a href="#">6</a>
-                                                            </li>
-                                                            <li id="dataTables-example_next" tabindex="0" aria-controls="dataTables-example" class="paginate_button next">
-                                                            <a href="#">Next</a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div> <!--no footer ola -->
                             </div>
                             <!--/.data table-responsive-->
                         </div>
@@ -265,6 +179,7 @@
         <!-- /#page-wrapper -->
 
     </div>
+    </form>
     <!-- /#wrapper -->
     
     <!-- jQuery -->
@@ -277,7 +192,19 @@
     <script src="{% static 'records/js/plugins/morris/raphael.min.js' %}"></script>
     <script src="{% static 'records/js/plugins/morris/morris.min.js' %}"></script>
     <script src="{% static 'records/js/plugins/morris/morris-data.js' %}"></script>
-
+<script>
+function submitform(testId, testtypeId)
+{
+    var hiddentest = document.getElementById('hidden_test_id');
+    var hiddentesttype = document.getElementById('hidden_testType_id');
+    hiddentest.value = testId;
+    hiddentesttype.value = testtypeId;
+    var forms = document.getElementsByTagName('form');
+    var form = forms[0];
+    form.submit();
+    // not adding alert() returns back here. Don't know what is going on here
+}
+</script>
    </body>
 
 </html>

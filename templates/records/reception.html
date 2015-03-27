@@ -24,7 +24,7 @@
 
 </head>
 
-<body>
+<body onload="load()">
 
     <div id="wrapper">
         <!-- Navigation -->
@@ -133,107 +133,104 @@
                 </div>
 
                 <form action="{% url 'reception'%}" method="post">
+                {% csrf_token %}
                 <div class="row">
                     <div class="col-lg-6 col-lg-offset-2">
-                        <form role="form">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
-                                    <h2 class="panel-title">
+                                    <h2>
                                         Personal Information
                                     </h2>
-                            </div>
-                            <div class="panel-body">
+                                </div>
+                    {# for selection of new and existing patient #}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p> New Patient
+                                <input type="radio" name="new_patient" value="1" onclick="hide('existing_patient')"/>
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p> Existing Patient
+                                <input type="radio" name="new_patient" value="0" onclick="hide('new_patient')"/>
+                            </p>
+                        </div>
+                    </div>
+                    {# end selection #}
+
+                            <div class="panel-body patient_data" id="new_patient">
                                 <div class="form-group">
-                                    <label>Name</label>
-                                    <input class="form-control" placeholder="Name">
+                                    <label for="{{ newPatientForm.name.id_for_label }}">{{newPatientForm.name.name|title}}</label>
+                                    <input class="form-control" placeholder="Name" name="{{newPatientForm.name.name}}">
                                 </div>
                             
                                 <div class="form-group">
                                     <label>Sex</label>
-                                    <div class="radio">
-                                        <label class="radio-inline">
-                                            <input type="radio" name="optionsRadiosInline" id="optionsRadiosInline1" value="option1" checked>Male
-                                        </label>
-                                        <label class="radio-inline">
-                                            <input type="radio" name="optionsRadiosInline" id="optionsRadiosInline2" value="option2">Female
-                                        </label>
-                                        <label class="radio-inline">
-                                            <input type="radio" name="optionsRadiosInline" id="optionsRadiosInline3" value="option3">Other
-                                        </label>
-                                    </div>
+                                    {{newPatientForm.sex }}
                                 </div>
+
                                 <div class="form-group">
-                                    <label>Address</label>
-                                    <input class="form-control" placeholder="Address">
+                                    <label>{{newPatientForm.address.name|title}}</label>
+                                    <input class="form-control" placeholder="Address" name="{{newPatientForm.address.name}}">
                                 </div>
+
                                 <div class="form-group">
                                     <label>Contact Number</label>
-                                    <input class="form-control" placeholder="Contact Number">
+                                    <input class="form-control" placeholder="Contact Number" name="{{newPatientForm.contact.name}}">
                                 </div>
                                 <div class="form-group">
-                                    <label>Age</label>
-                                    <input class="form-control" placeholder="Age" type="number">
+                                    <label>{{newPatientForm.age.name|title}}</label>
+                                    <input class="form-control" placeholder="Age" type="number" name="{{newPatientForm.age.name}}">
                                 </div>
                             </div>
+                            </div>{# end panel body #}
+
+                            <div class="panel panel-default patient_data" id="existing_patient">
+                            <p>
+                            Patient ID:
+                            <input class="form-control" type="text" name="patient_id" />
+                            </p>
                             </div>
-                            <div class="panel panel-default">
+                            <br>
+
+                            <div class="panel panel-default patient_data" id="doc_and_test">
                                 <div class="panel-heading">
                                     <h2 class="panel-title">
-                                        Medical information
+                                        Doctor information
                                     </h2>
                                 </div>
                                 <div class="panel-body">
                                      <div class="form-group">
-                                        <label>Referred By</label>
-                                        <label class="checkbox-inline">
-                                            <input type="checkbox">   Y
-                                        </label>
+                                        <label for="{{docAndTestForm.referred_by.id_label_for}}">Referred By</label>
+                                    {{docAndTestForm.referred_by}}
                                     </div>
                                     <div class="form-group">
-                                        <label>Medical Section</label>
-                                        <input class="form-control">
+                                        <label for="{{docAndTestForm.doctor_name.id_label_for}}">Doctor</label>
+                                        <input type="text" class="form-control" name="{{docAndTestForm.doctor_name.name}}" />
                                     </div>
+                                    
                                     <div class="form-group">
-                                        <label>Doctor's name</label>
-                                        <select class="form-control">
-                                            <option placeholder="Doctor's name"></option>
-                                            <option>2</option>
-                                            <option>3</option>
-                                            <option>4</option>
-                                            <option>5</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Hospital</label>
-                                        <input class="form-control">
+                                        <label for="{{docAndTestForm.hospital.id_label_for}}">Hospital</label>
+                                        <input type="text" class="form-control" name="{{docAndTestForm.hospital.name}}" />
                                     </div>
                                 </div>
                             </div>
 
                             <div class="panel panel-default">
                                 <div class="panel-heading">
-                                    <h2 class="panel-title">Test Information</h2>
+                                    <h2 class="panel-title">Tests</h2>
                                 </div>
                                 <div class="panel-body">
+                                {% for x in testtypes %}
                                     <div class="form-group">
-                                        <label>Tests</label>
                                         <div class="checkbox">
-                                            <label>
-                                                <input type="checkbox" value="">Haematology
-                                            </label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label>
-                                                <input type="checkbox" value="">Serology
-                                            </label>
-                                        </div>
+                                                <input type="checkbox" name="{{x.name}}"><label>{{x.name}}</label>
                                     </div>
                                 </div>
-                            </div>
-                            <button type="submit" class="btn btn-success">Submit</button>
+                                {% endfor %}
+                                </div>
+                                        
+                                <button type="submit" class="btn btn-success">Submit</button>
                             <button type="reset" class="btn btn-default">Reset</button>
-                        </form>
                     </div>
                 </div>
             </div>
@@ -253,7 +250,25 @@
     <script src="{% static 'records/js/plugins/morris/raphael.min.js' %}"></script>
     <script src="{% static 'records/js/plugins/morris/morris.min.js' %}"></script>
     <script src="{% static 'records/js/plugins/morris/morris-data.js' %}"></script>
-
+<script>
+    function hide(id)
+    {
+        elements = document.getElementsByClassName('patient_data');
+        for(x in elements)
+        {
+            if(elements[x].id==id)
+                elements[x].style.display="none";
+            else
+                elements[x].style.display="block";
+        }
+    }
+    function load()
+    {
+        elements = document.getElementsByClassName('patient_data');
+        for(x in elements)
+            elements[x].style.display="none";
+    } 
+</script>
 </body>
 
 </html>

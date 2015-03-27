@@ -20,21 +20,26 @@ class Reception(View):
             return HttpResponseRedirect(reverse('lab'))
         newPatientForm = NewPatientForm()
         docAndTestForm= DoctorAndTestForm()
-        return render(request, 'records/reception1.html', {'newPatientForm':newPatientForm, 'docAndTestForm':docAndTestForm})
+        #return render(request, 'records/reception1.html', {'newPatientForm':newPatientForm, 'docAndTestForm':docAndTestForm})
+        testtypes = TestType.objects.all()
+        return render(request, 'records/reception.html', {'newPatientForm':newPatientForm, 'docAndTestForm':docAndTestForm, 'testtypes':testtypes})
 
 
     def post(self, request):
         error = None
         newpatientform = NewPatientForm()
+        docAndTestForm= DoctorAndTestForm()
         try:
             if request.method == 'POST':
+                data = request.POST.copy()
                 # check if it is new patient or not
                 if request.POST['new_patient']=="1":
                     newpatientform = NewPatientForm(request.POST or None)
     
-                    if newpatientform.is_valid(): 
+                    if 1 or newpatientform.is_valid(): 
     
-                        data = newpatientform.cleaned_data
+                        #data = newpatientform.cleaned_data
+                        data = request.POST.copy()
     
                         # check for patient, if already, send error msg
                         patients = Patient.objects.filter(name=data['name'], contact=data['contact'])
@@ -61,10 +66,13 @@ class Reception(View):
                     patient = patients[0]
 
                 # now get doctor and test data
-                docandtestform = DoctorAndTestForm(request.POST or None)
-                if docandtestform.is_valid():
-                    data = docandtestform.cleaned_data
-                    if data['referred_by']:
+                #docandtestform = DoctorAndTestForm(request.POST or None)
+                doctor=None
+                #if 1 or docandtestform.is_valid():
+                if 1:
+                    #data = docandtestform.cleaned_data
+                    data = request.POST.copy()
+                    if 'referred_by' in data.keys():
                         docname = data['doctor_name']
                         hospital = data['hospital']
 
@@ -84,10 +92,11 @@ class Reception(View):
                     # create test elements, for different tests checked in the reception page
                     testtypes = TestType.objects.all()
                     for x in testtypes:
-                        if data[x.name]==True: ## means test is chosen
+                        for y in data.keys():
+                            if x.name==y:
                             # create new test object
-                            newtest = Test(visit=visit, testType=x)
-                            newtest.save()
+                                newtest = Test(visit=visit, testType=x)
+                                newtest.save()
                     return HttpResponseRedirect('/index/reception/')
             else:
                 return HttpResponse('not a post request')
@@ -121,7 +130,7 @@ class LabTest(View):
         fields_boolean = BooleanTestField.objects.filter(testType = testtype)
 
         context = {'testId':testId, 'testtype' : testtype.name, 'fields_numeric' : fields_numeric, 'fields_boolean' : fields_boolean}
-        return render(request,'records/labtest1.html',  context)
+        return render(request,'records/labtest.html',  context)
 
 # to process the lab form ( which results in report)
 def processLabForm(request):
@@ -180,7 +189,7 @@ class Lab(View):
         tests = Test.objects.filter(reportOut=False)
         context['tests'] = tests
 
-        return render(request, 'records/lab1.html', context)
+        return render(request, 'records/lab.html', context)
 
     def post(self, request):
         return HttpResponse('test')
