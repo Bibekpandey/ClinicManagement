@@ -35,12 +35,12 @@
                      <td>{{ x.field.name }}</td> <td>{{ x.value }}</td> 
                      {# for range #}
                      <td>
-                     {% if x.field.maleRange == x.field.femaleRange and x.field.maleRange == x.field.childRange %}
+                     {% if x.field.maleRange  and not x.field.maleRange and not x.field.childRange %}
                         {{x.field.maleRange}}
-                     {% elif x.field.maleRange != x.field.femaleRange and x.field.femaleRange == x.field.childRange %}
+                     {% elif x.field.maleRange and  x.field.femaleRange and not x.field.childRange %}
                         male: {{ x.field.maleRange }}
                         female: {{ x.field.femaleRange }}
-                     {% elif x.field.maleRange == x.field.femaleRange and x.field.maleRange != x.field.childRange %}
+                     {% elif x.field.maleRange and  x.field.femaleRange and x.field.childRange %}
                         adult: {{ x.field.maleRange }}
                         child: {{ x.field.childRange }}
                      {% endif %}</td>
@@ -51,19 +51,15 @@
     
     {# boolean uncategorized #}
     {% for each in boolean_uncategorized %}
-                {% if forloop.counter == forloop.parentloop.counter %}
-                    {% for x in each %}
                     <tr>
-                     <td>{{ x.field.name }}</td> {# positive and negative values #}
+                     <td>{{ each.field.name }}</td> {# positive and negative values #}
                         <td>
-                        {% if x.value == 0 %} 
-                            {{ x.field.negative}} 
+                        {% if each.value == 0 %} 
+                            {{ each.field.negative}} 
                         {% else %} 
-                            {{ x.field.positive }} 
+                            {{ each.field.positive }} 
                         {% endif %} </td>
                     </tr>
-                    {% endfor %}
-                {% endif %}
             {% endfor %}
     {# now the categorized ones #}
         {% for category in categories %}
@@ -74,15 +70,16 @@
                      <tr><td>{{ x.field.name }}</td><td>{{ x.value }}</td> 
                      {# for range #}
                      <td>
-                     {% if x.field.maleRange == x.field.femaleRange and x.field.maleRange == x.field.childRange %}
+                     {% if x.field.maleRange  and  not x.field.femaleRange and not x.field.childRange %}
                         {{x.field.maleRange}}
-                     {% elif x.field.maleRange != x.field.femaleRange and x.field.femaleRange == x.field.childRange %}
-                        male: {{ x.field.maleRange }}<br>
+                     {% elif x.field.maleRange and  x.field.femaleRange and not x.field.childRange %}
+                        male: {{ x.field.maleRange }}
                         female: {{ x.field.femaleRange }}
-                     {% elif x.field.maleRange == x.field.femaleRange and x.field.maleRange != x.field.childRange %}
-                        adult: {{ x.field.maleRange }}<br>
+                     {% elif x.field.maleRange and  x.field.femaleRange and x.field.childRange %}
+                        adult: {{ x.field.maleRange }}
                         child: {{ x.field.childRange }}
                      {% endif %}</td>
+
                      </tr>
                     {% endfor %}
                 {% endif %}

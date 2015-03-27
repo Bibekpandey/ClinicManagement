@@ -182,11 +182,11 @@
             <h2>Numeric fields</h2>
             <div id="numeric">
                     {% for field in fields_numeric %}
-                    <div id = "{{ field }}" onClick="selectionNumeric(this.id, '{{field.maleRange}}', '{{field.femaleRange}}', '{{field.childRange}}')">
+                    <div id = "{{ field.id }}" onclick="selectionNumeric(this.id, '{{field}}', '{{field.category}}', '{{field.maleRange}}', '{{field.femaleRange}}', '{{field.childRange}}')">
                         <button type="button" class="button-lab"> {{ field }} -- {{ field.category }} </button>
                     </div>
                     <script>
-                        field_selected += "numeric_" + "{{field}}" + ",";
+                        field_selected += "numeric_" + "{{field.id}}" + ",";
                     </script>
                     {% endfor %}
             </div>
@@ -194,11 +194,11 @@
             <h2>Boolean fields</h2>
             <div id="boolean">
                     {% for field in fields_boolean %}
-                    <div id = "{{ field }}" onClick="selectionBoolean(this.id, '{{field.positive}}', '{{field.negative}}')">
+                    <div id = "{{ field.id }}" onClick="selectionBoolean(this.id,'{{field}}','{{field.category}}', '{{field.positive}}', '{{field.negative}}')">
                         <button class="button-lab" type="button" > {{ field }} -- {{ field.category }}</button>
                     </div>
                     <script>
-                        field_selected += "boolean_" +  "{{field}}" + ",";
+                        field_selected += "boolean_" +  "{{field.id}}" + ",";
                     </script>
                     {% endfor %}
                 </ul>
@@ -207,12 +207,18 @@
         
         <div class="col-md-7">
             <h2>Selected fields </h2>
+            <hr>
             <form name="testform" action = "{% url 'process_lab_form' %}" method="post" onsubmit="return validate(field_selected)">
             {% csrf_token %}
                 <input type="hidden" name="testtype" value="{{testtype}}"/>
                 <input type="hidden" name="testid" value="{{testId}}"/>
-                <div id="selected">
+                <div id="uncategorized_selected">
                 </div>
+                {% for category in categories %}
+                <div id="{{category}}_selected">
+                <h4>{{category}}</h4>
+                </div>
+                {% endfor %}
                 <input type="submit" value="submit" class="button-lab button-green" />
             </form>
         </div> {# col7 end #}

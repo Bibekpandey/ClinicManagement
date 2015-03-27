@@ -1,7 +1,7 @@
 
 // selection on click method
 // numeric form creation is to be done using this
-function selectionNumeric(id, maleRange, femaleRange, childRange)
+function selectionNumeric(id, fieldname, category, maleRange, femaleRange, childRange)
 {
     //get our  node with id that is to be hidden after selection
     var x = document.getElementById(id);
@@ -18,7 +18,7 @@ function selectionNumeric(id, maleRange, femaleRange, childRange)
     var label = document.createElement("LABEL");
     label.setAttribute("class", "label-lab");
     label.setAttribute('font-weight', 'bold');
-    label.innerHTML = id;
+    label.innerHTML = fieldname;
 
     var input = document.createElement("input");
     input.setAttribute('class', 'form-control input-lab');
@@ -30,15 +30,17 @@ function selectionNumeric(id, maleRange, femaleRange, childRange)
     var male = null;
     var female = null;
     var child = null;
-
-    if(maleRange == femaleRange && femaleRange==childRange)
+    
+    // first case for normal range
+    if(maleRange != 'None' && femaleRange=='None' && childRange=='None')
     {
         male = document.createElement("LABEL");
         male.setAttribute('class','label-lab');
         male.innerHTML = 'Normal'+'('+maleRange+')';
     }
 
-    else if(maleRange != femaleRange && femaleRange == childRange)
+    // for male and female range
+    else if(maleRange != 'None' && femaleRange!='None' && childRange=='None')
     {
         male = document.createElement("LABEL");
         male.setAttribute('class','label-lab');
@@ -47,18 +49,21 @@ function selectionNumeric(id, maleRange, femaleRange, childRange)
         female.setAttribute('class','label-lab');
         female.innerHTML = 'Female'+'('+femaleRange+')';
     }
-
-    else
+    // for adult and child range
+    else if (childRange!='None')
     {
         male = document.createElement("LABEL");
         male.setAttribute('class','label-lab');
-        male.innerHTML = 'Male'+'('+maleRange+')';
-        female = document.createElement("LABEL");
-        female.setAttribute('class','label-lab');
-        female.innerHTML = 'Female'+'('+femaleRange+')';
+        male.innerHTML = 'Adult'+'('+maleRange+')';
         child = document.createElement("LABEL");
         child.setAttribute('class','label-lab');
-        child.innerHTML = 'Child'+'('+childRange+')';
+        child.innerHTML = 'Children'+'('+childRange+')';
+
+    }
+    // else empty
+    else
+    {
+        male= female=child=null;
     }
 
     //create button
@@ -90,13 +95,16 @@ function selectionNumeric(id, maleRange, femaleRange, childRange)
     */
 
     //append to our div
-    var divappend = document.getElementById("selected");
+    var divappend;
+    if(category=='None')
+        divappend = document.getElementById('uncategorized_selected');
+    else
+        divappend = document.getElementById(category+"_selected");
     divappend.appendChild(newdiv);
-
 }
 
 // radio button type of form to be created here
-function selectionBoolean(id, positive, negative)
+function selectionBoolean(id, fieldname, category, positive, negative)
 {
     //alert(positive + " " + negative);
     //get our  node with id that is to be hidden after selection
@@ -111,8 +119,7 @@ function selectionBoolean(id, positive, negative)
 
     var label = document.createElement("LABEL");
     label.setAttribute('class', 'label-lab');
-    label.innerHTML = id+ " : ";
-
+    label.innerHTML = fieldname+ " : ";
 
     //label for positive
     var label_positive = document.createElement("LABEL");
@@ -152,9 +159,12 @@ function selectionBoolean(id, positive, negative)
     newdiv.appendChild(button);
     newdiv.appendChild(select);
 
-    var divappend = document.getElementById("selected");
+    var divappend;
+    if(category=='None')
+        divappend = document.getElementById('uncategorized_selected');
+    else
+        divappend = document.getElementById(category+"_selected");
     divappend.appendChild(newdiv);
-
 }
 
 

@@ -85,9 +85,13 @@ class Reception(View):
                         else:
                             doctor = doctors[0]
     
-                    # now create visit object
-                    visit = Visit(patient=patient, referredBy=doctor)
-                    visit.save()
+                    # now create visit object, check if visit of the same day exists or not
+                    visits = Visit.objects.filter(date__year=datetime.now().year,date__month=datetime.now().month, date__day=datetime.now().day)
+                    if len(visits)==0:
+                        visit = Visit(patient=patient, referredBy=doctor)
+                        visit.save()
+                    else:
+                        visit = visits[0]
 
                     # create test elements, for different tests checked in the reception page
                     testtypes = TestType.objects.all()
@@ -128,8 +132,9 @@ class LabTest(View):
 
         fields_numeric = NumericTestField.objects.filter(testType = testtype)
         fields_boolean = BooleanTestField.objects.filter(testType = testtype)
+        categories = Category.objects.filter(testType=testtype)
 
-        context = {'testId':testId, 'testtype' : testtype.name, 'fields_numeric' : fields_numeric, 'fields_boolean' : fields_boolean}
+        context = {'testId':testId, 'testtype' : testtype.name, 'fields_numeric' : fields_numeric, 'fields_boolean' : fields_boolean, 'categories':categories}
         return render(request,'records/labtest.html',  context)
 
 # to process the lab form ( which results in report)
@@ -154,15 +159,15 @@ def processLabForm(request):
         string = ''
         for x in postcopy:
             if 'boolean' in x: # means it is a boolean field
-                fieldname = x.split('boolean_')[1]
-                boolfield = get_object_or_404(BooleanTestField, name=fieldname)
+                fieldid = int(x.split('boolean_')[1])
+                boolfield = get_object_or_404(BooleanTestField, pk=fieldid)
                 boolresult = BooleanResult(value=int(postcopy[x]),test=testObj, field=boolfield)
                 calculation += boolfield.price         
                 boolresult.save()
                 
             if 'numeric' in x: # means it is a numeric field
-                fieldname = x.split('numeric_')[1]
-                numericfield = get_object_or_404(NumericTestField, name=fieldname)
+                fieldid= int(x.split('numeric_')[1])
+                numericfield = get_object_or_404(NumericTestField, pk=fieldid)
                 numericresult = NumericResult(field=numericfield, test=testObj, value=float(postcopy[x]))
                 calculation += numericfield.price
                 numericresult.save()
