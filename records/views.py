@@ -120,7 +120,7 @@ class LabTest(View):
         fields_boolean = BooleanTestField.objects.filter(testType = testtype)
 
         context = {'testId':testId, 'testtype' : testtype.name, 'fields_numeric' : fields_numeric, 'fields_boolean' : fields_boolean}
-        return render(request,'records/labtest1.html',  context)
+        return render(request,'records/labtest.html',  context)
 
 # to process the lab form ( which results in report)
 def processLabForm(request):
@@ -173,7 +173,7 @@ class Lab(View):
         tests = Test.objects.filter(reportOut=False)
         context['tests'] = tests
 
-        return render(request, 'records/lab1.html', context)
+        return render(request, 'records/lab.html', context)
 
     def post(self, request):
         return HttpResponse('test')
