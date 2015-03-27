@@ -181,6 +181,7 @@ class Lab(View):
     def get(self, request):
         context = {}
         logintype = request.session.get('logintype','')
+        context['logintype'] =  logintype
 
         if not logintype or logintype=='reception' : 
             return HttpResponseRedirect(reverse('login'))
@@ -219,12 +220,15 @@ class Login(View):
         context['logintype'] = logintype
 
         if not logintype : 
-            return HttpResponseRedirect(reverse('login'))
+            error = "plese select the account type" 
+            context['error'] = error
+            return render(request, 'records/login.html', context)
 
         user = None
         if username=='' or password=='':
             error = "username/password cannot be empty :D"
-            return HttpResponseRedirect(reverse("login"))
+            context['error'] = error
+            return render(request, 'records/login.html', context)
         else:
             if logintype == "lab":
                 user = LabStaff.objects.filter(username = username, password = password)
@@ -234,7 +238,7 @@ class Login(View):
         if len(user) == 0:
             error = "invalid username/password"
             context['error'] = error
-            return HttpResponseRedirect(reverse('login'))
+            return render(request, 'records/login.html', context)
         else:
             request.session['logintype'] = logintype
             return HttpResponseRedirect(reverse(logintype))

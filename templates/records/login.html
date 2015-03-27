@@ -10,6 +10,7 @@
 </head>
 
 <body>
+    <div id="page-wrapper">
     <div class="container">
         <div class="row">
             <div class="col-md-4 col-md-offset-4">
@@ -19,6 +20,13 @@
                     </div>
                     <div class="panel-body">
                         <form role="form" method="post" action="{% url 'login' %}" >
+                        <div class = "form-group">
+                                    <input type="radio" name="selection" value="reception" onclick="radioSelection('reception')" />
+                                    <label> RECEPTION  </label>
+                                    <input type="radio" name="selection" value="lab" onclick="radioSelection('lab')" />
+                                    <label> LAB </label>
+                                </div>
+
                         {% csrf_token %}
                             <fieldset>
                                 <div class="form-group">
@@ -28,15 +36,7 @@
                                     <input class="form-control" placeholder="Password" name="password" type="password" value="">
                                 </div>
 
-                                <div class = "form-group">
-                                    <input type="radio" name="selection" value="reception" onclick="radioSelection('reception')" />
-                                    <label> RECEPTION  </label>
-                                </div>
-                                <div class = "form-group">
-                                    <input type="radio" name="selection" value="lab" onclick="radioSelection('lab')" />
-                                    <label> LAB </label>
-                                </div>
-
+                                
                                 <div class="checkbox">
                                     <label>
                                         <input name="remember" type="checkbox" value="Remember Me">Remember Me
@@ -47,11 +47,15 @@
                             </fieldset>
                         </form>
                     </div>
+                    <div class="panel-heading" >
+                        <h4 class="panel-heading text-danger">{{ error }}</h4>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
+</div>
+</body>
     <!-- jQuery -->
     <script src="{% static 'records/js/jquery.js ' %}"></script>
 
@@ -72,7 +76,6 @@
         }
     </script>
 
-</body>
 </html>
 
 
