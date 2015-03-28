@@ -86,7 +86,7 @@ class Reception(View):
                             doctor = doctors[0]
     
                     # now create visit object, check if visit of the same day exists or not
-                    visits = Visit.objects.filter(date__year=datetime.now().year,date__month=datetime.now().month, date__day=datetime.now().day)
+                    visits = Visit.objects.filter(patient=patient, date__year=datetime.now().year,date__month=datetime.now().month, date__day=datetime.now().day)
                     if len(visits)==0:
                         visit = Visit(patient=patient, referredBy=doctor)
                         visit.save()
@@ -106,6 +106,7 @@ class Reception(View):
                 return HttpResponse('not a post request')
         except Exception as e:
             error = 'invalid form or entry'
+            error = e.args()
             return render(request, 'records/reception.html', {'request':request, 'error':error, 'newPatientForm':newpatientform, 'docAndTestForm':docAndTestForm})
         except ValueError:
             return HttpResponse('value error')
