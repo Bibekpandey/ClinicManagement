@@ -10,12 +10,6 @@ from django.utils.timezone import get_current_timezone
 from datetime import datetime
 
 
-class Home(View):
-    def get(self, request):
-        return render(request, 'records/index.html', {'request':request})
-        
-
-
 class Reception(View):
 
     def get(self, request):

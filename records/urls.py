@@ -5,7 +5,7 @@ from records.views import *
 urlpatterns = patterns('',
     # Examples:
      #url(r'^$', Index.as_view(), name='index'),
-	 url(r'^$', Home.as_view(), name='home'),
+	 url(r'^$', Login.as_view(), name='home'),
 	 url(r'^reception/$', Reception.as_view(), name='reception'),
 	 url(r'^labtest/', LabTest.as_view(), name='labtest'),
      url(r'^lab/$', Lab.as_view(), name='lab'),
