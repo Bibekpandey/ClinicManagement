@@ -10,6 +10,12 @@ from django.utils.timezone import get_current_timezone
 from datetime import datetime
 
 
+class Home(View):
+    def get(self, request):
+        return render(request, 'records/index.html', {'request':request})
+        
+
+
 class Reception(View):
 
     def get(self, request):
@@ -22,7 +28,7 @@ class Reception(View):
         docAndTestForm= DoctorAndTestForm()
         #return render(request, 'records/reception1.html', {'newPatientForm':newPatientForm, 'docAndTestForm':docAndTestForm})
         testtypes = TestType.objects.all()
-        return render(request, 'records/reception.html', {'newPatientForm':newPatientForm, 'docAndTestForm':docAndTestForm, 'testtypes':testtypes})
+        return render(request, 'records/reception.html', {'request':request, 'newPatientForm':newPatientForm, 'docAndTestForm':docAndTestForm, 'testtypes':testtypes})
 
 
     def post(self, request):
@@ -101,14 +107,14 @@ class Reception(View):
                             # create new test object
                                 newtest = Test(visit=visit, testType=x)
                                 newtest.save()
-                    return HttpResponseRedirect('/index/reception/')
+                    return HttpResponseRedirect('/biomed/reception/')
             else:
                 return HttpResponse('not a post request')
         except Exception as e:
-            error = e.args[0]
-            return render(request, 'records/reception.html', {'error':error, 'newPatientForm':newpatientform, 'docAndTestForm':docAndTestForm})
+            error = 'invalid form or entry'
+            return render(request, 'records/reception.html', {'request':request, 'error':error, 'newPatientForm':newpatientform, 'docAndTestForm':docAndTestForm})
         except ValueError:
-            return HttpResponse('valueerrro')
+            return HttpResponse('value error')
 
 class LabTest(View):
 
@@ -132,48 +138,53 @@ class LabTest(View):
         categories = Category.objects.filter(testType=testtype)
 
         context = {'testId':testId, 'testtype' : testtype.name, 'fields_numeric' : fields_numeric, 'fields_boolean' : fields_boolean, 'categories':categories}
+        context['request'] = request
         return render(request,'records/labtest.html',  context)
 
 # to process the lab form ( which results in report)
 def processLabForm(request):
     if request.method=='POST':
-        # a hidden type to know what type of test
-        testtype = request.POST.get('testtype','')
-        testid = int(request.POST.get('testid', ''))
-        testObj = get_object_or_404(Test, pk=testid)
+        try:
+            # a hidden type to know what type of test
+            testtype = request.POST.get('testtype','')
+            testid = int(request.POST.get('testid', ''))
+            testObj = get_object_or_404(Test, pk=testid)
 
-        testtypeObj = TestType.objects.filter(name=testtype)[0]
+            testtypeObj = TestType.objects.filter(name=testtype)[0]
 
-        # now remove testtype and csrfmiddlewaretoken, we don't need them
-        postcopy = request.POST.copy()
-        postcopy.pop('csrfmiddlewaretoken')
-        postcopy.pop('testtype')
-        postcopy.pop('testid')
+            # now remove testtype and csrfmiddlewaretoken, we don't need them
+            postcopy = request.POST.copy()
+            postcopy.pop('csrfmiddlewaretoken')
+            postcopy.pop('testtype')
+            postcopy.pop('testid')
 
-        # now we have all the fields(numeric and boolean) and their values in the postcopy dict, can be iterated
-        #for bill calculation of Test object
-        calculation = float(0)
-        string = ''
-        for x in postcopy:
-            if 'boolean' in x: # means it is a boolean field
-                fieldid = int(x.split('boolean_')[1])
-                boolfield = get_object_or_404(BooleanTestField, pk=fieldid)
-                boolresult = BooleanResult(value=int(postcopy[x]),test=testObj, field=boolfield)
-                calculation += boolfield.price         
-                boolresult.save()
-                
-            if 'numeric' in x: # means it is a numeric field
-                fieldid= int(x.split('numeric_')[1])
-                numericfield = get_object_or_404(NumericTestField, pk=fieldid)
-                numericresult = NumericResult(field=numericfield, test=testObj, value=float(postcopy[x]))
-                calculation += numericfield.price
-                numericresult.save()
+            # now we have all the fields(numeric and boolean) and their values in the postcopy dict, can be iterated
+            #for bill calculation of Test object
+            calculation = float(0)
+            string = ''
+            for x in postcopy:
+                if 'boolean' in x: # means it is a boolean field
+                    fieldid = int(x.split('boolean_')[1])
+                    boolfield = get_object_or_404(BooleanTestField, pk=fieldid)
+                    boolresult = BooleanResult(value=int(postcopy[x]),test=testObj, field=boolfield)
+                    calculation += boolfield.price         
+                    boolresult.save()
+                    
+                if 'numeric' in x: # means it is a numeric field
+                    fieldid= int(x.split('numeric_')[1])
+                    numericfield = get_object_or_404(NumericTestField, pk=fieldid)
+                    numericresult = NumericResult(field=numericfield, test=testObj, value=float(postcopy[x]))
+                    calculation += numericfield.price
+                    numericresult.save()
 
-        testObj.reportOut = True
-        testObj.bill = calculation
-        testObj.save();
-        return HttpResponseRedirect('/index/lab/')
-
+            testObj.reportOut = True
+            testObj.bill = calculation
+            testObj.save();
+            return HttpResponseRedirect('/biomed/lab/')
+        except ValueError:
+            return HttpResponse('value error')
+        except Exception as e:
+            return HttpResponse('Error: '+ e) 
 
 
 class Lab(View):
@@ -182,6 +193,7 @@ class Lab(View):
         context = {}
         logintype = request.session.get('logintype','')
         context['logintype'] =  logintype
+        context['request'] = request
 
         if not logintype or logintype=='reception' : 
             return HttpResponseRedirect(reverse('login'))
@@ -203,9 +215,10 @@ class Login(View):
         context = {}
         context['logintype'] = ''
         context['error'] = ''
+        context['request'] = request
         logintype = request.session.get('logintype','')
         if logintype : 
-            return HttpResponseRedirect('/index/' + logintype)
+            return HttpResponseRedirect('/biomed/' + logintype)
         else:
             return render(request, 'records/login.html', context)
 
@@ -213,6 +226,7 @@ class Login(View):
     def post(self, request):
         error = None
         context = {}
+        context['request'] = request
 
         username = request.POST.get('username', '')
         password = request.POST.get('password', '')
@@ -248,6 +262,11 @@ class Report(View):
 
     def get(self, request):
         context = {}
+        # search and patient will be used in template to distinguish
+        # if the request is for searching or getting patient visits
+        context['search'] = False 
+        context['individual'] = False 
+        context['request'] = request
         logintype = request.session.get('logintype' , '')
         if not logintype : 
             return HttpResponseRedirect(reverse('login'))
@@ -255,29 +274,55 @@ class Report(View):
             return HttpResponseRedirect(reverse('reception'))
         try:
             #our query string for fetching patient information
-            patientid = int(request.GET.get('patient',''))
+            patientid = request.GET.get('patient','')
+            searchstring = request.GET.get('search','')
 
-            patient = get_object_or_404(Patient, pk=patientid)
-            visits = Visit.objects.filter(patient = patient).order_by('-date')
+            # if patientid is given, then it means show visits of patients
+            if patientid != '':
+                context['individual'] = True
+                context['title'] = 'Visits'
+                patient = get_object_or_404(Patient, pk=int(patientid))
+                visits = Visit.objects.filter(patient = patient).order_by('-date')
 
-            context['name'] = patient.name
-            context['contact'] = patient.contact
+                context['patient'] = patient
+                context['subtitle'] = patient.name + ', Patient ID: '+str(patient.pk)
 
-            context['visits'] = visits
+                context['visit_list'] = visits
 
-            # now get list of all the tests of the visits
-            alltests = []
-            for visit in visits:
-                visittests = Test.objects.filter(visit=visit)
-                alltests.append(visittests)
-            context['alltests'] = alltests
+                # now get list of all the tests of the visits
+                alltests = []
+                for visit in visits:
+                    visittests = Test.objects.filter(visit=visit)
+                    alltests.append(visittests)
+                context['alltests'] = alltests
+                # return the patient visits  
+                return render(request, 'records/report.html', context)
 
-            return render(request, 'records/report.html', context)
+            else:
+                context['title'] = 'Search patients'
+                context['subtitle'] = 'search in the box above'
+                return render(request, 'records/report.html', context)
+
         except ValueError:
             raise Http404
 
     def post(self, request):
-        return HttpResponse("report")
+        context = {}
+        context['request'] = request
+        context['search'] = True
+        context['individual'] = False
+        if request.POST:
+            searchstring = request.POST.get('search', '')
+            context['title'] = "Search Results"
+            context['subtitle'] = searchstring
+            patients = Patient.objects.filter(name__icontains=searchstring)
+            context['patient_list'] = patients
+
+            return render(request, 'records/report.html', context)
+
+            return HttpResponse("report")
+        else:
+            raise Http404
 
 # for detail view of the report of the 'visit' specified by 'visitid'
 class ReportDetail(View):
@@ -319,6 +364,7 @@ class ReportDetail(View):
             context['visit'] = test.visit
             context['patient'] = test.visit.patient
             context['testtype'] = test.testType
+            context['request'] = request
 
             return render(request, 'records/report_detail.html', context)
             
@@ -327,6 +373,7 @@ class ReportDetail(View):
 
     def post(self, request):
         context = {}
+        context['request'] = request
         # get post data
         name = request.POST.get("name","")
         contact = request.POST.get("contact","")

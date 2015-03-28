@@ -1,7 +1,18 @@
 {% extends 'records/base.html' %}
 
 {% block selectionbar %}
- <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-edit"></i> Reception <i class="fa fa-fw fa-caret-down"></i></a>
+<li class="active">
+     <a href="{% url 'reception' %}"><i class="fa fa-fw fa-hospital-o"></i> Reception Staff</a>
+</li>
+
+<li>
+     <a href="{% url 'lab' %}"><i class="fa fa-fw fa-flask"></i> Lab Staff</a>
+</li>
+
+<li>
+    <a href="{% url 'report' %}"><i class="fa fa-fw fa-bar-chart-o"></i> Report</a>
+</li>
+
  {% endblock %}
 
 {% block content %}

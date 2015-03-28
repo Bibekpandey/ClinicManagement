@@ -1,19 +1,50 @@
 {% extends "records/base.html" %}
 
 {% block selectionbar %}
- <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-edit"></i> LAB<i class="fa fa-fw fa-caret-down"></i></a>
+<li>
+     <a href="{% url 'reception' %}"><i class="fa fa-fw fa-hospital-o"></i> Reception </a>
+</li>
+
+<li class=>
+     <a href="{% url 'lab' %}"><i class="fa fa-fw fa-flask"></i> Lab Staff</a>
+</li>
+
+<li class="active">
+    <a href="{% url 'report' %}"><i class="fa fa-fw fa-bar-chart-o"></i> Report</a>
+</li>
+
 {% endblock %}
 
 {% block content %}
 
         <div id="page-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-7">
+                    </div>
+                    <div class="col-md-5">
+                        <form method="post" action="{%url 'report' %}">
+                        {% csrf_token %}
+                        <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-9">
+                            <input type="text" class="form-control input-sm" maxlength="64" placeholder="Search for patients" name="search"/>
+                            </div>
+                            <div class="col-md-3">
+                            <button type="submit" class="btn btn-primary btn-sm">Search</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
             <div class="container-fluid">  
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Lab  <small>Lab Reports and informations</small>
+                            {{ title }} <small>{{subtitle}}</small>
                         </h1>
+                        <!--
                         <ol class="breadcrumb">
                             <li>
                                 <i class="fa fa-home"></i>  <a href="index.html">Dashboard</a>
@@ -22,6 +53,7 @@
                                 <i class="fa fa-flask"></i> Lab
                             </li>
                         </ol>
+                        -->
                     </div>
                 </div><!--end breadcrumb-->
 
@@ -29,7 +61,13 @@
                 <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            Visits of <b>{{name}}</b>
+                        {% if individual %}
+                            <b> Recent Visits </b>
+                        {% elif search %}
+                            <b> Results by name </b>
+                        {% else %}
+                            <b> Nothing to show </b>
+                        {% endif %}
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
@@ -38,15 +76,10 @@
                                     
                                     <div class="row">
                                         <div class="col-sm-12">
-    
-                                             <form name = "report" method="post" action="{% url 'report_detail' %}">
-                                             {% csrf_token %}
-                                                 <input id="hidden_name_id" type="hidden" name="name" value="-1" />
-                                                 <input id="hidden_contact_id" type="hidden" name="contact" value="-1" />
-                                                 <input id="hidden_date_id" type="hidden" name="date" value = "-1" />
-                                                 <input id="hidden_visit_id" type="hidden" name="id" value="-1" />
-                                             {% for visit in visits %}
-                                             <div id="visit_{{forloop.counter}}">
+                                            <ul class="list-group"> <!-- list for visits or search results -->
+                                         {% if individual %}
+                                             {% for visit in visit_list %}
+                                             <li class="list-group-item"><div id="visit_{{forloop.counter}}">
                                                  <a href="#" onclick="toggletests({{forloop.counter}});">{{ visit.date }}</a><br>
                                                  <div class="tests" id="tests_{{forloop.counter}}">
                                                      <ul class="list-group">
@@ -59,8 +92,21 @@
                                                          {% endfor %}
                                                      </ul>
                                                  </div>
+                                                </li>
                                              </div>
                                              {% endfor %}
+                                        {% else %}
+                                            {% if not patient_list and search %}
+                                                <b class="text-danger"> no results to show!! </b>
+                                            {% else %}
+                                                {% for patient in patient_list %}
+                                                    <li class="list-group-item">
+                                                         <a href="{% url 'report'%}?patient={{patient.pk}}" >{{ patient }}</a><br>
+                                                    </li>
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endif %}
+                                            </ul>
 
                                         </div>
                                     </div>
@@ -95,6 +141,7 @@
         for (x in elems)
             elems[x].style.display="none";
     }
+    load();
 
 </script>
 {% endblock %}

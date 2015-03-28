@@ -1,5 +1,17 @@
 {% extends "records/base.html" %}
+{% block selectionbar %}
+<li>
+     <a href="{% url 'reception' %}"><i class="fa fa-fw fa-hospital-o"></i> Reception </a>
+</li>
 
+<li class=>
+     <a href="{% url 'lab' %}"><i class="fa fa-fw fa-flask"></i> Lab Staff</a>
+</li>
+
+<li class="active">
+    <a href="{% url 'report' %}"><i class="fa fa-fw fa-bar-chart-o"></i> Report</a>
+</li>
+{% endblock %}
 
 {% block content %}
 
@@ -10,20 +22,26 @@
                 <h1 class="page-header">Report Details
                     <small>{{ testtype }} </small>
                 </h1>
-                <ul class="list-group">
-                    <li class="list-group-item"> <b> Name : </b>  {{ patient.name }} </li>
-                    <li class="list-group-item"> <b> Age : </b>  {{ patient.age}} </li>
-                    <li class="list-group-item"> <b> Sex : </b>  {{ patient.sex}} </li>
-                    <li class="list-group-item"> <b> Contact : </b>  {{ patient.contact}} </li>
-                    <li class="list-group-item"> <b> Address : </b>  {{ patient.address}} </li>
-                    <li class="list-group-item"> <b> Referred By : </b> Dr.  {{ visit.referredBy.name}} ( {{ visit.referredBy.hospital }} ) </li>
-                    <li class="list-group-item"> <b> Visit Time  : </b>  {{ visit.date }} </li>
-                    <li class="list-group-item"> <b> Visit Number : </b>  {{ visit.patient.numberOfVisits }} </li>
-                </ul>
-                <hr />
-
+                    <div class="container-fluid">
+                        <div class="col-md-6">
+                            <ul class="list-group">
+                                <li class="list-group-item"> <b> Name : </b>  {{ patient.name }} </li>
+                                <li class="list-group-item"> <b> Age : </b>  {{ patient.age}} </li>
+                                <li class="list-group-item"> <b> Sex : </b>  {{ patient.sex}} </li>
+                                <li class="list-group-item"> <b> Contact : </b>  {{ patient.contact}} </li>
+                                <li class="list-group-item"> <b> Address : </b>  {{ patient.address}} </li>
+                                <li class="list-group-item"> <b> Referred By : </b> {% if visit.referredBy %} Dr. {% endif %}  {{ visit.referredBy.name}} ( {{ visit.referredBy.hospital }} ) </li>
+                                <li class="list-group-item"> <b> Visit Time  : </b>  {{ visit.date }} </li>
+                                <li class="list-group-item"> <b> Visit Number : </b>  {{ visit.patient.numberOfVisits }} </li>
+                            </ul>
+                        </div>{# col #}
+                        <div class="col-md-6" style="text-align:center">
+                        <h2> BioMed <small>Logo here</small></h2>
+                        </div>
+                    </div>
+                    <h2>Test Details</h2>
             <table class="table table-striped table-bordered"> 
-            <tr><th>SUB-TEST</th><th>VALUE</th><th>NORMAL RANGE</th>
+            <tr><th>SUB-TEST</th><th>RESULT</th><th>NORMAL RANGE</th>
                 {# first the uncategorized #}
                 {% for each in numeric_uncategorized %}
                                 <tr>
