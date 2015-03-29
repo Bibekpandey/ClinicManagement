@@ -86,7 +86,7 @@
                                                          {% for tests in alltests %}
                                                              {% if forloop.parentloop.counter == forloop.counter %}
                                                                  {% for test in tests %}
-                                                                 <li class="list-group-item"><a href="{% url 'report_detail'%}?testid={{test.id}}"> {{test}} </a></li>
+                                                                 <li class="list-group-item"><a href="{% url 'report_detail'%}?testid={{test.id}}">{{test}} {# checking report out #}{% if not test.reportOut %} <span class="text-danger">report not out</span>{% endif %}</a></li>
                                                                  {% endfor %}
                                                              {% endif %}
                                                          {% endfor %}

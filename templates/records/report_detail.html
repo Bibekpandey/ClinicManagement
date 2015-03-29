@@ -26,6 +26,7 @@
                         <div class="col-md-6">
                             <ul class="list-group">
                                 <li class="list-group-item"> <b> Name : </b>  {{ patient.name }} </li>
+                                <li class="list-group-item"> <b> Id : </b>  {{ patient.pk}} </li>
                                 <li class="list-group-item"> <b> Age : </b>  {{ patient.age}} </li>
                                 <li class="list-group-item"> <b> Sex : </b>  {{ patient.sex}} </li>
                                 <li class="list-group-item"> <b> Contact : </b>  {{ patient.contact}} </li>
@@ -84,10 +85,10 @@
                                  {% if x.field.maleRange  and  not x.field.femaleRange and not x.field.childRange %}
                                     {{x.field.maleRange}}
                                  {% elif x.field.maleRange and  x.field.femaleRange and not x.field.childRange %}
-                                    male: {{ x.field.maleRange }}
+                                    male: {{ x.field.maleRange }}<br>
                                     female: {{ x.field.femaleRange }}
                                  {% elif x.field.maleRange and  x.field.femaleRange and x.field.childRange %}
-                                    adult: {{ x.field.maleRange }}
+                                    adult: {{ x.field.maleRange }}<br>
                                     child: {{ x.field.childRange }}
                                  {% endif %}</td>
                                  </tr>
