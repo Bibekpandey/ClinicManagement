@@ -49,6 +49,16 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
+PASSWORD_HASHERS = (
+            'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+            'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+            'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+            'django.contrib.auth.hashers.BCryptPasswordHasher',
+            'django.contrib.auth.hashers.SHA1PasswordHasher',
+            'django.contrib.auth.hashers.MD5PasswordHasher',
+            'django.contrib.auth.hashers.CryptPasswordHasher',
+            )
+
 ROOT_URLCONF = 'ClinicManagement.urls'
 
 WSGI_APPLICATION = 'ClinicManagement.wsgi.application'
@@ -75,7 +85,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
 # Static files (CSS, JavaScript, Images)

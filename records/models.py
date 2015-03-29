@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import datetime
+from django.contrib.auth.models import User
 
 
 # for the ranges of values like RBC count normal value lies between 12000 - 15000 cucmm(just example)
@@ -145,15 +146,14 @@ class Test(models.Model):
         return self.testType.name + " ("+self.visit.patient.name+")"
 
 class LabStaff(models.Model):
-    username = models.CharField(max_length = 50)
-    password = models.CharField(max_length = 200)
+    user = models.OneToOneField(User)
 
     def __str__(self):
-        return "labstaff : " + self.username
+        return "labstaff : " + self.user.username
 
 class ReceptionStaff(models.Model):
-    username = models.CharField(max_length = 50)
-    password = models.CharField(max_length = 200)
+    user = models.OneToOneField(User)
 
     def __str__(self):
-        return "receptionstaff : " + self.username
+        return "labstaff : " + self.user.username
+

@@ -9,6 +9,8 @@ from records.models import *
 from django.utils.timezone import get_current_timezone
 from datetime import datetime
 
+from django.contrib.auth import authenticate, login
+
 
 class Reception(View):
 
@@ -106,7 +108,7 @@ class Reception(View):
                 return HttpResponse('not a post request')
         except Exception as e:
             error = 'invalid form or entry'
-            error = e.args()
+            error = e.args
             return render(request, 'records/reception.html', {'request':request, 'error':error, 'newPatientForm':newpatientform, 'docAndTestForm':docAndTestForm})
         except ValueError:
             return HttpResponse('value error')
@@ -233,18 +235,20 @@ class Login(View):
             context['error'] = error
             return render(request, 'records/login.html', context)
 
-        user = None
+        userlog = None
         if username=='' or password=='':
             error = "username/password cannot be empty :D"
             context['error'] = error
             return render(request, 'records/login.html', context)
         else:
             if logintype == "lab":
-                user = LabStaff.objects.filter(username = username, password = password)
+                tempuser = authenticate(username=username, password=password)
+                userlog = LabStaff.objects.filter(user=tempuser)
             if logintype == "reception":
-                user = ReceptionStaff.objects.filter(username = username, password = password)
+                tempuser = authenticate(username=username, password=password)
+                userlog = ReceptionStaff.objects.filter(user=tempuser)
 
-        if len(user) == 0:
+        if len(userlog) == 0:
             error = "invalid username/password"
             context['error'] = error
             return render(request, 'records/login.html', context)
