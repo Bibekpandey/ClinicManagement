@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -179,21 +180,25 @@
                 <!-- /.row -->
     <div class="row">
         <div class="col-md-5">
-            <h2>Numeric fields</h2>
+            
             {% for key, value in fields.items %}
                 <h2>{{key}}</h2>
+            <div id="numeric">
                 {% for field in value.num_fields %}
                     <div id = "{{ field.id }}" onclick="selectionNumeric(this.id, '{{field}}', '{{field.category}}', '{{field.maleRange}}', '{{field.femaleRange}}', '{{field.childRange}}')">
                         <button type="button" class="button-lab"> {{ field }}</button>
+                    </div>
                 {% endfor %}
+            </div>
+            <div id="boolean">
                 {% for field in value.bool_fields %}
                 <div id = "{{ field.id }}" onClick="selectionBoolean(this.id,'{{field}}','{{field.category}}', '{{field.positive}}', '{{field.negative}}')">
                         <button class="button-lab" type="button" > {{ field }}</button>
-
+                </div>
                 {% endfor %}
-                <br><br>
+            </div>
             {% endfor %}
-            <div id="numeric" style="display:none">
+            <div id="numerica" style="display:none">
                     {% for field in fields_numeric %}
                     <div id = "{{ field.id }}" onclick="selectionNumeric(this.id, '{{field}}', '{{field.category}}', '{{field.maleRange}}', '{{field.femaleRange}}', '{{field.childRange}}')">
                         <button type="button" class="button-lab"> {{ field }} -- {{ field.category }} </button>
@@ -205,8 +210,9 @@
             </div>
             
        
-            <h2>Boolean fields</h2>
-            <div id="boolean">
+            
+            <div id="booleana" style="display:none">
+                    <h2>Boolean fields</h2>
                     {% for field in fields_boolean %}
                      <div id = "{{ field.id }}" onClick="selectionBoolean(this.id,'{{field}}','{{field.category}}', '{{field.positive}}', '{{field.negative}}')">
                         <button class="button-lab" type="button" > {{ field }} -- {{ field.category }}</button>
