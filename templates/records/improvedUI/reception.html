@@ -1,0 +1,33 @@
+{% extends 'records/improvedUI/base.html' %}
+
+{% block sidebar %}
+
+<li class="active">
+     <a href="{% url 'reception' %}">Home</a>
+</li>
+
+<li>
+     <a href="#">Reception Staff</a>
+</li>
+
+{% endblock %}
+
+{% block content %}
+    <h1> Reception </h1>
+{% endblock %}
+
+{% block footer %}
+
+<script>
+    function load()
+    {
+        elements = document.getElementsByClassName('patient_data');
+        for(x in elements)
+            elements[x].style.display="none";
+    } 
+    $(document).ready( function()
+    {
+    });
+</script>
+
+{% endblock %}

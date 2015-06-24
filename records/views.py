@@ -24,7 +24,7 @@ class Reception(View):
         docAndTestForm= DoctorAndTestForm()
         #return render(request, 'records/reception1.html', {'newPatientForm':newPatientForm, 'docAndTestForm':docAndTestForm})
         testtypes = TestType.objects.all()
-        return render(request, 'records/reception.html', {'request':request, 'newPatientForm':newPatientForm, 'docAndTestForm':docAndTestForm, 'testtypes':testtypes})
+        return render(request, 'records/improvedUI/reception.html', {'request':request, 'newPatientForm':newPatientForm, 'docAndTestForm':docAndTestForm, 'testtypes':testtypes})
 
 
     def post(self, request):
@@ -223,7 +223,7 @@ class Lab(View):
         # get all the tests which have not been carried out 
         tests = Test.objects.filter(reportOut=False)
         context['tests'] = tests
-        return render(request, 'records/lab.html', context)
+        return render(request, 'records/improvedUI/lab.html', context)
 
     def post(self, request):
         return HttpResponse('test')
