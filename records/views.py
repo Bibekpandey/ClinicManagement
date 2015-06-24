@@ -9,6 +9,8 @@ from records.models import *
 from django.utils.timezone import get_current_timezone
 from datetime import datetime
 
+from django.contrib.auth import authenticate, login
+
 
 class Reception(View):
 
@@ -106,7 +108,6 @@ class Reception(View):
                 return HttpResponse('not a post request')
         except Exception as e:
             error = 'invalid form or entry'
-            error = e.args()
             return render(request, 'records/reception.html', {'request':request, 'error':error, 'newPatientForm':newpatientform, 'docAndTestForm':docAndTestForm})
         except ValueError:
             return HttpResponse('value error')
@@ -131,8 +132,34 @@ class LabTest(View):
         fields_numeric = NumericTestField.objects.filter(testType = testtype)
         fields_boolean = BooleanTestField.objects.filter(testType = testtype)
         categories = Category.objects.filter(testType=testtype)
+        
+        # we seek fields according to their category
+        fields = {}
 
-        context = {'testId':testId, 'testtype' : testtype.name, 'fields_numeric' : fields_numeric, 'fields_boolean' : fields_boolean, 'categories':categories}
+        # for fields with no category
+        none_category_num_field = NumericTestField.objects.filter(testType=testtype, category=None)
+        none_category_bool_field = BooleanTestField.objects.filter(testType=testtype, category=None)
+        fields['none'] = {}
+        fields['none']['bool_fields'] = list(none_category_bool_field)
+        fields['none']['num_fields'] = list(none_category_num_field)
+
+        for category in categories:
+
+            fields[category] = {}
+
+            bool_fields = BooleanTestField.objects.filter(testType=testtype, category=category)
+            num_fields = NumericTestField.objects.filter(testType=testtype, category=category)
+
+            fields[category]['bool_fields'] = []
+            fields[category]['num_fields'] = []
+            fields[category]['none'] = []
+
+            for field in num_fields:
+                fields[category]['num_fields'].append(field)
+            for field in bool_fields:
+                fields[category]['bool_fields'].append(field)
+
+        context = {'testId':testId, 'testtype' : testtype.name, 'fields_numeric' : fields_numeric, 'fields_boolean' : fields_boolean, 'categories':categories, 'fields':fields}
         context['request'] = request
         return render(request,'records/labtest.html',  context)
 
@@ -233,18 +260,20 @@ class Login(View):
             context['error'] = error
             return render(request, 'records/login.html', context)
 
-        user = None
+        userlog = None
         if username=='' or password=='':
             error = "username/password cannot be empty :D"
             context['error'] = error
             return render(request, 'records/login.html', context)
         else:
             if logintype == "lab":
-                user = LabStaff.objects.filter(username = username, password = password)
+                tempuser = authenticate(username=username, password=password)
+                userlog = LabStaff.objects.filter(user=tempuser)
             if logintype == "reception":
-                user = ReceptionStaff.objects.filter(username = username, password = password)
+                tempuser = authenticate(username=username, password=password)
+                userlog = ReceptionStaff.objects.filter(user=tempuser)
 
-        if len(user) == 0:
+        if len(userlog) == 0:
             error = "invalid username/password"
             context['error'] = error
             return render(request, 'records/login.html', context)
@@ -395,7 +424,3 @@ class Logout(View):
 
     def post(self, request):
         pass
-
-
-
-

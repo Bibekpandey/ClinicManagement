@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import datetime
+from django.contrib.auth.models import User
 
 
 # for the ranges of values like RBC count normal value lies between 12000 - 15000 cucmm(just example)
@@ -52,6 +53,9 @@ class BooleanTestField(TestField):
     positive = models.CharField(max_length=30) # like, in parasites field, positive means 'found' and negative means 'not found'
     negative = models.CharField(max_length=30)
 
+    def __str__(self):
+        return self.name
+
 
 # field for tests having numerical results like RBC count
 
@@ -59,6 +63,9 @@ class NumericTestField(TestField):
     maleRange   = models.ForeignKey('Range', related_name="male_range", null=True, blank=True)
     femaleRange = models.ForeignKey('Range', related_name="female_range", null=True, blank=True)
     childRange  = models.ForeignKey('Range', related_name="child_range", null=True, blank=True)
+
+    def __str__(self):
+        return self.name
 
 
 # for storing result
@@ -145,15 +152,14 @@ class Test(models.Model):
         return self.testType.name + " ("+self.visit.patient.name+")"
 
 class LabStaff(models.Model):
-    username = models.CharField(max_length = 50)
-    password = models.CharField(max_length = 200)
+    user = models.OneToOneField(User)
 
     def __str__(self):
-        return "labstaff : " + self.username
+        return "labstaff : " + self.user.username
 
 class ReceptionStaff(models.Model):
-    username = models.CharField(max_length = 50)
-    password = models.CharField(max_length = 200)
+    user = models.OneToOneField(User)
 
     def __str__(self):
-        return "receptionstaff : " + self.username
+        return "labstaff : " + self.user.username
+

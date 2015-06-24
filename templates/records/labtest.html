@@ -180,7 +180,20 @@
     <div class="row">
         <div class="col-md-5">
             <h2>Numeric fields</h2>
-            <div id="numeric">
+            {% for key, value in fields.items %}
+                <h2>{{key}}</h2>
+                {% for field in value.num_fields %}
+                    <div id = "{{ field.id }}" onclick="selectionNumeric(this.id, '{{field}}', '{{field.category}}', '{{field.maleRange}}', '{{field.femaleRange}}', '{{field.childRange}}')">
+                        <button type="button" class="button-lab"> {{ field }}</button>
+                {% endfor %}
+                {% for field in value.bool_fields %}
+                <div id = "{{ field.id }}" onClick="selectionBoolean(this.id,'{{field}}','{{field.category}}', '{{field.positive}}', '{{field.negative}}')">
+                        <button class="button-lab" type="button" > {{ field }}</button>
+
+                {% endfor %}
+                <br><br>
+            {% endfor %}
+            <div id="numeric" style="display:none">
                     {% for field in fields_numeric %}
                     <div id = "{{ field.id }}" onclick="selectionNumeric(this.id, '{{field}}', '{{field.category}}', '{{field.maleRange}}', '{{field.femaleRange}}', '{{field.childRange}}')">
                         <button type="button" class="button-lab"> {{ field }} -- {{ field.category }} </button>
@@ -190,13 +203,14 @@
                     </script>
                     {% endfor %}
             </div>
+            
        
             <h2>Boolean fields</h2>
             <div id="boolean">
                     {% for field in fields_boolean %}
-                    <div id = "{{ field.id }}" onClick="selectionBoolean(this.id,'{{field}}','{{field.category}}', '{{field.positive}}', '{{field.negative}}')">
+                     <div id = "{{ field.id }}" onClick="selectionBoolean(this.id,'{{field}}','{{field.category}}', '{{field.positive}}', '{{field.negative}}')">
                         <button class="button-lab" type="button" > {{ field }} -- {{ field.category }}</button>
-                    </div>
+                   </div>
                     <script>
                         field_selected += "boolean_" +  "{{field.id}}" + ",";
                     </script>

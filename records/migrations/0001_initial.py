@@ -3,11 +3,13 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 import datetime
+from django.conf import settings
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
@@ -47,8 +49,7 @@ class Migration(migrations.Migration):
             name='LabStaff',
             fields=[
                 ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
-                ('username', models.CharField(max_length=50)),
-                ('password', models.CharField(max_length=200)),
+                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
             ],
             options={
             },
@@ -81,7 +82,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Patient',
             fields=[
-                ('person_ptr', models.OneToOneField(parent_link=True, serialize=False, auto_created=True, primary_key=True, to='records.Person')),
+                ('person_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, to='records.Person', serialize=False)),
                 ('numberOfVisits', models.IntegerField(default=1)),
                 ('membership', models.CharField(max_length=40)),
             ],
@@ -105,8 +106,7 @@ class Migration(migrations.Migration):
             name='ReceptionStaff',
             fields=[
                 ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
-                ('username', models.CharField(max_length=50)),
-                ('password', models.CharField(max_length=200)),
+                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
             ],
             options={
             },
@@ -117,7 +117,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
                 ('reportOut', models.BooleanField(default=False)),
-                ('reportDate', models.DateTimeField(default=datetime.datetime(2015, 3, 27, 3, 13, 41, 53292))),
+                ('reportDate', models.DateTimeField(default=datetime.datetime(2015, 3, 29, 15, 19, 41, 768148))),
                 ('testDone', models.BooleanField(default=False)),
                 ('bill', models.FloatField(default=0)),
             ],
@@ -139,10 +139,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='NumericTestField',
             fields=[
-                ('testfield_ptr', models.OneToOneField(parent_link=True, serialize=False, auto_created=True, primary_key=True, to='records.TestField')),
-                ('childRange', models.ForeignKey(related_name='child_range', blank=True, to='records.Range')),
-                ('femaleRange', models.ForeignKey(to='records.Range', related_name='female_range', null=True)),
-                ('maleRange', models.ForeignKey(related_name='male_range', to='records.Range')),
+                ('testfield_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, to='records.TestField', serialize=False)),
+                ('childRange', models.ForeignKey(related_name='child_range', null=True, to='records.Range', blank=True)),
+                ('femaleRange', models.ForeignKey(related_name='female_range', null=True, to='records.Range', blank=True)),
+                ('maleRange', models.ForeignKey(related_name='male_range', null=True, to='records.Range', blank=True)),
             ],
             options={
             },
@@ -151,7 +151,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='BooleanTestField',
             fields=[
-                ('testfield_ptr', models.OneToOneField(parent_link=True, serialize=False, auto_created=True, primary_key=True, to='records.TestField')),
+                ('testfield_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, to='records.TestField', serialize=False)),
                 ('positive', models.CharField(max_length=30)),
                 ('negative', models.CharField(max_length=30)),
             ],
@@ -174,7 +174,7 @@ class Migration(migrations.Migration):
             name='Visit',
             fields=[
                 ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
-                ('date', models.DateTimeField(default=datetime.datetime(2015, 3, 27, 3, 13, 41, 52718))),
+                ('date', models.DateTimeField(default=datetime.datetime(2015, 3, 29, 15, 19, 41, 767231))),
                 ('totalBill', models.FloatField(default=0)),
                 ('comments', models.CharField(blank=True, max_length=100)),
                 ('patient', models.ForeignKey(to='records.Patient')),
@@ -187,7 +187,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='testfield',
             name='category',
-            field=models.ForeignKey(to='records.Category', blank=True, null=True),
+            field=models.ForeignKey(null=True, to='records.Category', blank=True),
             preserve_default=True,
         ),
         migrations.AddField(

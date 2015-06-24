@@ -28,28 +28,18 @@
                         <h1 class="page-header">
                             Reception  <small>Patient's Info</small>
                         </h1>
-                        <!---
-                        <ol class="breadcrumb">
-                            <li>
-                                <i class="fa fa-home"></i>  <a href="index.html">Dashboard</a>
-                            </li>
-                            <li>
-                                <i class="fa fa-edit"></i> Reception
-                            </li>
-                            <li class="active">
-                                <i class="fa fa-edit"></i> New Patient
-                            </li>
-                        </ol>
-                        -->
-                    </div>
+                                        </div>
                 </div><!--end breadcrumb-->
 
                 <form action="{% url 'reception' %}" method="post">
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-lg-6 col-lg-offset-2">
-                    {% if 1 or error %}
-                        <p class="text-danger">{{error}}</p>
+                    {% if  error %}
+                    <div class="alert alert-danger alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        <i class="fa fa-info-circle"></i>  <strong>{{error}}</strong>
+                                                                                                    </div>
                     {% endif %}
 
                             <div class="panel panel-default">
