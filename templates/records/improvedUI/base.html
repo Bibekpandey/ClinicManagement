@@ -96,8 +96,25 @@
                 <!-- collapsible icon -->
 
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-12 container-fluid">
+
+                        <!-- error panel template -->
+                        <div class="panel-group" id="error-panel">
+                            <div class="panel panel-default error-template">
+                                <div id="error-1" class="panel-body">
+                                    <div class="error-content">
+                                        errors content goes here
+                                    </div>
+                                    <button type="button" class="close error-close" aria-label="Close"
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- error panel -->
+
                         {% block content %} {% endblock %}
+
                     </div>
                 </div>
 
@@ -119,8 +136,35 @@
     {% block footer %} {% endblock %}
 
     <script>
+        var $error_template = $(".error-template");
+
+        // for id of new error panel
+        var hash = 2;
+
+        // CreateErrorPanel
+        var CreateErrorPanel = function(content)
+        {
+            var $new_panel = $error_template.clone();
+            $new_panel.find(".error-content").html(content);
+            var id = "error-" + hash;
+            ++hash;
+            $new_panel.find(".panel-body").attr("id", id);
+            $new_panel.css("display", "block");
+
+            // assign close hander
+            $new_panel.find(".error-close").click(function() 
+            { 
+                $("#" + id).css("display", "none");
+            });
+
+            $("#error-panel").append($new_panel);
+        }
+
         $(document).ready(function() 
         {
+            // test error panel
+            CreateErrorPanel("error 1");
+
             $('[data-toggle=offcanvas]').click(function() 
             {
                 $('.row-offcanvas').toggleClass('active');
