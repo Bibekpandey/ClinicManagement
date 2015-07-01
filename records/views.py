@@ -55,7 +55,7 @@ class Reception(View):
     
                     else:   # if form is not valid
                         error='invalid form'
-                        return render(request, 'records/reception.html', {'error':error, 'newPatientForm':newpatientform, 'docAndTestForm':docAndTestForm})
+                        return render(request, 'records/improvedUI/reception.html', {'error':error, 'newPatientForm':newpatientform, 'docAndTestForm':docAndTestForm})
                         raise Exception('invalid form')
     
                 else: # if patient is existing patient
@@ -108,7 +108,7 @@ class Reception(View):
                 return HttpResponse('not a post request')
         except Exception as e:
             error = 'invalid form or entry'
-            return render(request, 'records/reception.html', {'request':request, 'error':error, 'newPatientForm':newpatientform, 'docAndTestForm':docAndTestForm})
+            return render(request, 'records/improvedUI/reception.html', {'request':request, 'error':error, 'newPatientForm':newpatientform, 'docAndTestForm':docAndTestForm})
         except ValueError:
             return HttpResponse('value error')
 

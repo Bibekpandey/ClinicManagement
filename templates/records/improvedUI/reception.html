@@ -13,11 +13,137 @@
 {% endblock %}
 
 {% block content %}
-    <h1> Reception </h1>
 
     <!-- form shit -->
     <form action="{% url 'reception' %}" method="post">
     {% csrf_token %}
+
+    <!-- row start -->
+    <div class="row container">
+
+        <!-- header -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2>
+                    Patient Details
+                </h2>
+            </div>
+        </div>
+        <!-- header -->
+
+        {# for selection of new and existing patient #}
+        <div class="row">
+            <!-- radio -->
+            <div class="col-md-6">
+                <p> New Patient
+                    <input type="radio" name="new_patient" value="1" onclick="hide('existing_patient')"/>
+                </p>
+            </div>
+            <!-- radio -->
+
+            <!-- radio -->
+            <div class="col-md-6">
+                <p> Existing Patient
+                    <input type="radio" name="new_patient" value="0" onclick="hide('new_patient')"/>
+                </p>
+            </div>
+            <!-- radio -->
+
+        </div>
+        {# end selection #}
+
+        <!-- panel body -->
+        <div class="panel-body patient_data" id="new_patient">
+            <div class="form-group">
+                <label for="{{ newPatientForm.name.id_for_label }}">{{newPatientForm.name.name|title}}</label>
+                <input class="form-control" placeholder="Name" name="{{newPatientForm.name.name}}">
+            </div>
+        
+            <div class="form-group">
+                <label>Sex</label>
+                {{newPatientForm.sex }}
+            </div>
+
+            <div class="form-group">
+                <label>{{newPatientForm.address.name|title}}</label>
+                <input class="form-control" placeholder="Address" name="{{newPatientForm.address.name}}">
+            </div>
+
+            <div class="form-group">
+                <label>Contact Number</label>
+                <input class="form-control" placeholder="Contact Number" name="{{newPatientForm.contact.name}}">
+            </div>
+
+            <div class="form-group">
+                <label>{{newPatientForm.age.name|title}}</label>
+                <input class="form-control" placeholder="Age" type="number" name="{{newPatientForm.age.name}}">
+            </div>
+        </div>
+        <!-- panel body -->
+
+        <div class="panel panel-default patient_data" id="existing_patient">
+        <p>
+        Patient ID:
+        <input class="form-control" type="text" name="patient_id" />
+        </p>
+        </div>
+        <br>
+
+
+        <!-- panel -->
+        <div class="panel panel-default patient_data" id="doc_and_test">
+            <!-- heading -->
+            <div class="panel-heading">
+                <h2 class="panel-title">
+                    Doctor information
+                </h2>
+            </div>
+            <!-- heading -->
+
+            <!-- body -->
+            <div class="panel-body">
+                 <div class="form-group">
+                    <label for="{{docAndTestForm.referred_by.id_label_for}}">Referred By</label>
+                {{docAndTestForm.referred_by}}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{docAndTestForm.doctor_name.id_label_for}}">Doctor</label>
+                    <input type="text" class="form-control" name="{{docAndTestForm.doctor_name.name}}" />
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{docAndTestForm.hospital.id_label_for}}">Hospital</label>
+                    <input type="text" class="form-control" name="{{docAndTestForm.hospital.name}}" />
+                </div>
+            </div>
+            <!-- body -->
+
+        </div>
+        <!-- panel -->
+
+        <!-- panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2 class="panel-title">Tests</h2>
+            </div>
+            <div class="panel-body">
+            {% for x in testtypes %}
+                <div class="form-group">
+                    <div class="checkbox">
+                            <input type="checkbox" name="{{x.name}}"><label>{{x.name}}</label>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+                    
+            <button type="submit" class="btn btn-success">Submit</button>
+            <button type="reset" class="btn btn-default">Reset</button>
+        </div>
+        <!-- panel -->
+
+    </div>
+    <!-- end row -->
 
     </form>
 
@@ -26,13 +152,23 @@
 {% block footer %}
 
 <script>
+    function hide(id)
+    {
+        elements = document.getElementsByClassName('patient_data');
+        for(x in elements)
+        {
+            if(elements[x].id==id)
+                elements[x].style.display="none";
+            else
+                elements[x].style.display="block";
+        }
+    }
     function load()
     {
+        elements = document.getElementsByClassName('patient_data');
+        for(x in elements)
+            elements[x].style.display="none";
     } 
-    $(document).ready( function()
-    {
-        load();
-    });
 </script>
 
 {% endblock %}
